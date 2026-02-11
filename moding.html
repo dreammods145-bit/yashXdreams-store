@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DREAM STORE</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <style>
+    :root {
+      --bg: #0f0f1a;
+      --card: #161b2e;
+      --accent: #00d4ff;
+      --price: #00ff9d;
+      --text: #e0f7ff;
+      --muted: #a3c4d4;
+      --danger: #ff4d4d;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      background-image: 
+        radial-gradient(circle at 20% 30%, rgba(0,212,255,0.08) 0%, transparent 25%),
+        radial-gradient(circle at 80% 70%, rgba(0,255,157,0.06) 0%, transparent 35%);
+    }
+
+    .container { max-width:1400px; margin:0 auto; padding:0 1.5rem; }
+
+    header {
+      padding:1.5rem 0;
+      border-bottom:1px solid rgba(0,212,255,0.08);
+      position:sticky; top:0;
+      background:rgba(15,15,26,0.85);
+      backdrop-filter:blur(10px);
+      z-index:100;
+    }
+
+    nav { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+
+    .logo {
+      font-size:1.8rem; font-weight:800;
+      background:linear-gradient(90deg, #00d4ff, #00ff9d);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+
+    .user-section { display:flex; align-items:center; gap:1rem; }
+    .auth-btn {
+      background:transparent; border:2px solid var(--accent); color:var(--accent);
+      padding:0.5rem 1rem; border-radius:50px; cursor:pointer; font-weight:600;
+    }
+    .auth-btn:hover { background:var(--accent); color:#000; }
+
+    .cart-btn {
+      background:transparent; border:2px solid var(--accent); color:var(--accent);
+      padding:0.6rem 1.2rem; border-radius:50px; cursor:pointer;
+      display:flex; align-items:center; gap:0.6rem; font-weight:600;
+    }
+    .cart-btn:hover { background:var(--accent); color:#000; transform:translateY(-2px); }
+
+    .hero { text-align:center; padding:5rem 0 3rem; }
+
+    .hero h1 {
+      font-size:clamp(2.8rem,8vw,5.5rem); font-weight:900; margin-bottom:1rem;
+      background:linear-gradient(90deg, #00d4ff, #00ff9d, #ff00aa, #00d4ff);
+      background-size:300%; -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+      animation:gradient 8s ease infinite;
+    }
+
+    @keyframes gradient { 0%{background-position:0% 50%;} 50%{background-position:100% 50%;} 100%{background-position:0% 50%;} }
+
+    .products-grid {
+      display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+      gap:1.8rem; padding:2rem 0 4rem;
+    }
+
+    .product-card {
+      background:var(--card); border-radius:16px; overflow:hidden;
+      border:1px solid rgba(0,212,255,0.12); transition:all 0.3s ease; position:relative;
+    }
+
+    .product-card:hover {
+      transform:translateY(-12px); border-color:var(--accent);
+      box-shadow:0 20px 40px rgba(0,0,0,0.4);
+    }
+
+    .product-img { width:100%; height:260px; object-fit:cover; background:#0a0e1a; }
+
+    .product-info { padding:1.4rem; text-align:center; }
+
+    .product-title { font-size:1.25rem; margin-bottom:0.6rem; font-weight:700; }
+
+    .product-price { font-size:1.5rem; font-weight:800; color:var(--price); margin-bottom:1rem; }
+
+    .add-to-cart {
+      width:100%; background:linear-gradient(90deg,var(--accent),#00b8ff);
+      color:black; border:none; padding:0.9rem; border-radius:50px; font-weight:700;
+      cursor:pointer; transition:all 0.25s;
+    }
+
+    .add-to-cart:hover { transform:scale(1.03); box-shadow:0 10px 25px rgba(0,212,255,0.4); }
+
+    /* Auth Modal */
+    #auth-modal {
+      display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9);
+      z-index:300; align-items:center; justify-content:center;
+    }
+
+    .auth-content {
+      background:var(--card); border-radius:16px; width:90%; max-width:420px;
+      padding:2.5rem; border:1px solid var(--accent); position:relative;
+    }
+
+    .auth-close { position:absolute; top:1rem; right:1.5rem; font-size:2rem; cursor:pointer; color:var(--muted); }
+
+    .auth-field {
+      position:relative; margin-bottom:1.2rem;
+    }
+
+    .auth-input {
+      width:100%; padding:0.9rem 2.8rem 0.9rem 1rem; border-radius:8px;
+      border:1px solid var(--accent); background:#0f0f1a; color:white; font-size:1rem;
+    }
+
+    .password-toggle {
+      position:absolute; right:0.9rem; top:50%; transform:translateY(-50%);
+      background:none; border:none; color:var(--muted); font-size:1.2rem; cursor:pointer;
+    }
+
+    .email-field { display:none; }
+
+    .auth-submit {
+      width:100%; padding:1rem; background:var(--accent); color:black; border:none;
+      border-radius:50px; font-weight:700; cursor:pointer; font-size:1.1rem; margin-top:0.5rem;
+    }
+
+    .auth-toggle {
+      text-align:center; margin-top:1.4rem; color:var(--accent); cursor:pointer; font-weight:500;
+    }
+
+    .error-msg { color:var(--danger); font-size:0.9rem; margin-top:-0.4rem; margin-bottom:1rem; text-align:center; display:none; }
+
+    /* Cart Modal and Checkout (unchanged - keeping only essentials) */
+    #cart-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:200; align-items:center; justify-content:center; }
+    .modal-content { background:var(--card); border-radius:16px; width:90%; max-width:500px; padding:2rem; border:1px solid var(--accent); position:relative; }
+    .close-btn { position:absolute; top:1rem; right:1.5rem; font-size:1.8rem; cursor:pointer; color:var(--muted); }
+    .cart-item { display:flex; justify-content:space-between; align-items:center; margin:1rem 0; padding-bottom:1rem; border-bottom:1px solid rgba(255,255,255,0.1); }
+    .remove-btn { background:none; border:none; color:var(--danger); font-size:1.4rem; cursor:pointer; padding:0.4rem; }
+    .remove-btn:hover { color:#ff3333; transform:scale(1.2); }
+    #cart-total { font-size:1.4rem; font-weight:800; color:var(--price); text-align:right; margin:1.5rem 0; }
+    #proceed-checkout { width:100%; background:var(--price); color:#000; border:none; padding:1rem; border-radius:50px; font-size:1.2rem; font-weight:700; cursor:pointer; }
+    .empty-cart { text-align:center; color:var(--muted); padding:2rem 0; font-size:1.2rem; }
+    #checkout-section { display:none; padding:4rem 1rem; text-align:center; }
+    #order-summary { background:rgba(255,255,255,0.05); padding:1.5rem; border-radius:12px; margin:0 auto 2rem; max-width:600px; }
+    #upi-qr-container { background:rgba(0,0,0,0.3); padding:2rem; border-radius:16px; border:1px solid var(--accent); margin:2rem auto; max-width:400px; }
+    #upi-qr { width:240px; height:240px; border:12px solid white; border-radius:16px; background:white; box-shadow:0 10px 30px rgba(0,0,0,0.5); margin:1rem auto; }
+    #pay-now { width:100%; max-width:400px; margin:2rem auto; padding:1.2rem; background:linear-gradient(90deg,var(--accent),var(--price)); color:#000; border:none; border-radius:50px; font-size:1.3rem; font-weight:800; cursor:pointer; display:block; }
+    #payment-message { margin:2rem auto; padding:1.5rem; border-radius:12px; max-width:600px; text-align:center; font-weight:700; display:none; }
+    .success { background:rgba(0,255,157,0.15); color:var(--price); border:1px solid var(--price); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <nav>
+      <div class="logo">DREAM STORE</div>
+      <div class="user-section">
+        <div id="user-info" style="display:none; font-weight:600; align-items:center; gap:0.8rem;">
+          Welcome, <span id="username-display"></span>
+          <button id="logout-btn" class="auth-btn">Logout</button>
+        </div>
+        <button id="login-btn" class="auth-btn">Login / Sign Up</button>
+        <button class="cart-btn" id="cart-btn">
+          <i class="fas fa-bag-shopping"></i>
+          Cart • <span id="cart-count">0</span>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<div class="container">
+  <section class="hero">
+    <h1>DREAM STORE</h1>
+    <p style="font-size:1.3rem; color:var(--muted); max-width:600px; margin:1.5rem auto;">
+      OWNER-dream mods CO OWNER YASH GAMERZ 
+    </p>
+  </section>
+
+  <section class="products-grid">
+    <!-- Your products here (unchanged) -->
+    <div class="product-card">
+      <img class="product-img" src="20191209online.jpg" alt="All MODING course">
+      <div class="product-info">
+        <h3 class="product-title">All MODING course </h3>
+        <div class="product-price">₹350</div>
+        <button class="add-to-cart" data-name="ALL MODING COURSE " data-price="350">Add to Cart</button>
+      </div>
+    </div>
+  <div class="product-card">
+      <img class="product-img" src="" alt="BACKGROUND MUSIC CHANGE ">
+      <div class="product-info">
+        <h3 class="product-title">BACKGROUND MUSIC CHANGE </h3>
+        <div class="product-price">₹70</div>
+        <button class="add-to-cart" data-name="BACKGROUND MUSIC CHANGE" data-price="70">Add to Cart</button>
+      </div>
+    </div>
+ <div class="product-card">
+      <img class="product-img" src="" alt="SHOTS CHANGE  ">
+      <div class="product-info">
+        <h3 class="product-title">SHOTS CHANGE</h3>
+        <div class="product-price">₹100</div>
+        <button class="add-to-cart" data-name="SHOTS CHANGE" data-price="100">Add to Cart</button>
+      </div>
+    </div>
+ <div class="product-card">
+      <img class="product-img" src="" alt="RC 20 mcs hack   ">
+      <div class="product-info">
+        <h3 class="product-title">RC20 mcs hack </h3>
+        <div class="product-price">₹50</div>
+        <button class="add-to-cart" data-name="RC20 mcs hack" data-price="50">Add to Cart</button>
+      </div>
+    </div>
+ <div class="product-card">
+      <img class="product-img" src="" alt="HIGH QUALITY 4K HD JERSEYS TUTORIAL VIDEO  ">
+      <div class="product-info">
+        <h3 class="product-title">HIGH QUALITY 4K HD JERSEYS TUTORIAL VIDEO </h3>
+        <div class="product-price">₹30</div>
+        <button class="add-to-cart" data-name="HIGH QUALITY 4K HD JERSEYS TUTORIAL VIDEO" data-price="30">Add to Cart</button>
+      </div>
+    </div>
+ <div class="product-card">
+      <img class="product-img" src="" alt="stadium texture change">
+      <div class="product-info">
+        <h3 class="product-title">stadium texture change</h3>
+        <div class="product-price">₹20</div>
+        <button class="add-to-cart" data-name="stadium texture change" data-price="20">Add to Cart</button>
+      </div>
+    </div>
+ <div class="product-card">
+      <img class="product-img" src="ipl.png" alt="IPL AUCTION ROOM CHANGE  ">
+      <div class="product-info">
+        <h3 class="product-title">IPL AUCTION ROOM CHANGE</h3>
+        <div class="product-price">₹30</div>
+        <button class="add-to-cart" data-name="IPL AUCTION ROOM CHANGE" data-price="30">Add to Cart</button>
+      </div>
+    </div>
+ <div class="product-card">
+      <img class="product-img" src="" alt="TEAMS NAME CHANGE   ">
+      <div class="product-info">
+        <h3 class="product-title">TEAMS NAME CHANGE </h3>
+        <div class="product-price">₹40</div>
+        <button class="add-to-cart" data-name="TEAMS NAME CHANGE" data-price="30">Add to Cart</button>
+      </div>
+    </div>
+ <div class="product-card">
+      <img class="product-img" src="" alt="SQUAD CHANGE PROOSS ">
+      <div class="product-info">
+        <h3 class="product-title">SQUAD CHANGE PROOSS</h3>
+        <div class="product-price">₹10</div>
+        <button class="add-to-cart" data-name="SQUAD CHANGE PROOSS" data-price="10">Add to Cart</button>
+      </div>
+    </div>
+ <div class="product-card">
+      <img class="product-img" s1¹c="" alt="PLAYER FACE CHANGE PROOSS">
+      <div class="product-info">
+        <h3 class="product-title">PLAYER FACE CHANGE PROOSS</h3>
+        <div class="product-price">₹20</div>
+        <button class="add-to-cart" data-name="PLAYER FACE CHANGE PROOSS" data-price="20">Add to Cart</button>
+      </div>
+    </div>
+ <div class="product-card">
+      <img class="product-img" src="" alt="Primum jersey pack">
+      <div class="product-info">
+        <h3 class="product-title">Primum jersey pack</h3>
+        <div class="product-price">₹60</div>
+        <button class="add-to-cart" data-name="Primum jersey pack" data-price="60">Add to Cart</button>
+      </div>
+    </div>
+    <!-- ... other products ... -->
+  </section>
+
+  <!-- Checkout Section (unchanged) -->
+  <section id="checkout-section">
+    <h2 style="font-size:2.8rem; margin-bottom:2rem;">Checkout</h2>
+    <div id="login-required" style="background:rgba(239,68,68,0.15); padding:1.5rem; border-radius:12px; margin-bottom:2rem;">
+      Please login to proceed to payment
+    </div>
+    <div id="order-summary" style="display:none;"></div>
+    <div id="upi-qr-container" style="display:none;">
+      <img id="upi-qr" src="" alt="UPI QR Code">
+      <div id="upi-id" style="font-size:1.3rem; font-weight:bold; color:var(--accent); margin:1rem 0;">
+       
+      </div>
+      <p style="color:var(--muted);">REDEEM CODE PAYMENT ONLY</p>
+    </div>
+    <button id="pay-now" style="display:none;">Confirm Order & Pay</button>
+    <div id="payment-message" class="success"></div>
+  </section>
+</div>
+
+<!-- Cart Modal (unchanged) -->
+<div id="cart-modal">
+  <div class="modal-content">
+    <span class="close-btn" id="close-cart">×</span>
+    <h2>Your Cart</h2>
+    <div id="cart-items"></div>
+    <div id="cart-total">Total: ₹0</div>
+    <button id="proceed-checkout">Proceed to Checkout</button>
+  </div>
+</div>
+
+<!-- Auth Modal - Updated -->
+<div id="auth-modal">
+  <div class="auth-content">
+    <span class="auth-close">×</span>
+    <h2 style="text-align:center; margin-bottom:1.8rem;">Welcome to Dream Store</h2>
+    
+    <div class="auth-field">
+      <input id="auth-username" class="auth-input" type="text" placeholder="Username" autocomplete="username">
+    </div>
+
+    <div class="auth-field email-field" id="email-field">
+      <input id="auth-email" class="auth-input" type="email" placeholder="Email (optional)" autocomplete="email">
+    </div>
+
+    <div class="auth-field">
+      <input id="auth-password" class="auth-input" type="password" placeholder="Password" autocomplete="current-password">
+      <button type="button" class="password-toggle" id="toggle-password">
+        <i class="fas fa-eye"></i>
+      </button>
+    </div>
+
+    <div id="auth-error" class="error-msg"></div>
+    
+    <button id="auth-submit" class="auth-submit">Login</button>
+    
+    <p id="auth-toggle" class="auth-toggle">Need an account? Sign up</p>
+  </div>
+</div>
+
+<script>
+  let cart = [];
+  let currentUser = null;
+
+  const els = {
+    loginBtn: document.getElementById('login-btn'),
+    userInfo: document.getElementById('user-info'),
+    usernameDisplay: document.getElementById('username-display'),
+    logoutBtn: document.getElementById('logout-btn'),
+    authModal: document.getElementById('auth-modal'),
+    authUsername: document.getElementById('auth-username'),
+    authEmail: document.getElementById('auth-email'),
+    authPassword: document.getElementById('auth-password'),
+    authSubmit: document.getElementById('auth-submit'),
+    authToggle: document.getElementById('auth-toggle'),
+    authError: document.getElementById('auth-error'),
+    authClose: document.querySelector('.auth-close'),
+    emailField: document.getElementById('email-field'),
+    togglePassword: document.getElementById('toggle-password'),
+    cartCount: document.getElementById('cart-count'),
+    cartModal: document.getElementById('cart-modal'),
+    closeCart: document.getElementById('close-cart'),
+    cartItems: document.getElementById('cart-items'),
+    cartTotal: document.getElementById('cart-total'),
+    cartBtn: document.getElementById('cart-btn'),
+    proceedCheckout: document.getElementById('proceed-checkout'),
+    checkoutSection: document.getElementById('checkout-section'),
+    orderSummary: document.getElementById('order-summary'),
+    loginRequired: document.getElementById('login-required'),
+    upiQrContainer: document.getElementById('upi-qr-container'),
+    payNow: document.getElementById('pay-now'),
+    paymentMessage: document.getElementById('payment-message')
+  };
+
+  let isLoginMode = true;
+  let passwordVisible = false;
+
+  // ----------------- Auth Logic -----------------
+  function showLoggedIn(username) {
+    currentUser = { username };
+    els.usernameDisplay.textContent = username;
+    els.userInfo.style.display = 'flex';
+    els.loginBtn.style.display = 'none';
+    localStorage.setItem('neonUsername', username);
+  }
+
+  function logout() {
+    currentUser = null;
+    localStorage.removeItem('neonUsername');
+    els.userInfo.style.display = 'none';
+    els.loginBtn.style.display = 'inline-block';
+  }
+
+  if (localStorage.getItem('neonUsername')) {
+    showLoggedIn(localStorage.getItem('neonUsername'));
+  }
+
+  els.loginBtn.addEventListener('click', () => {
+    els.authModal.style.display = 'flex';
+    els.authError.style.display = 'none';
+  });
+
+  els.authClose.addEventListener('click', () => {
+    els.authModal.style.display = 'none';
+    els.authError.style.display = 'none';
+    resetForm();
+  });
+
+  function resetForm() {
+    els.authUsername.value = '';
+    els.authEmail.value = '';
+    els.authPassword.value = '';
+    els.authPassword.type = 'password';
+    els.togglePassword.innerHTML = '<i class="fas fa-eye"></i>';
+    passwordVisible = false;
+  }
+
+  // Password show/hide
+  els.togglePassword.addEventListener('click', () => {
+    passwordVisible = !passwordVisible;
+    els.authPassword.type = passwordVisible ? 'text' : 'password';
+    els.togglePassword.innerHTML = passwordVisible 
+      ? '<i class="fas fa-eye-slash"></i>' 
+      : '<i class="fas fa-eye"></i>';
+  });
+
+  els.authToggle.addEventListener('click', () => {
+    isLoginMode = !isLoginMode;
+    els.authSubmit.textContent = isLoginMode ? 'Login' : 'Sign Up';
+    els.authToggle.textContent = isLoginMode ? 'Need an account? Sign up' : 'Already have an account? Login';
+    els.emailField.style.display = isLoginMode ? 'none' : 'block';
+    els.authError.style.display = 'none';
+  });
+
+  els.authSubmit.addEventListener('click', () => {
+    const user = els.authUsername.value.trim();
+    const email = els.authEmail.value.trim();
+    const pass = els.authPassword.value.trim();
+
+    if (!user || user.length < 3) {
+      els.authError.textContent = "Username must be at least 3 characters";
+      els.authError.style.display = 'block';
+      return;
+    }
+    if (!pass || pass.length < 4) {
+      els.authError.textContent = "Password must be at least 4 characters";
+      els.authError.style.display = 'block';
+      return;
+    }
+    // Optional: basic email check during signup
+    if (!isLoginMode && email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      els.authError.textContent = "Please enter a valid email";
+      els.authError.style.display = 'block';
+      return;
+    }
+
+    const users = JSON.parse(localStorage.getItem('neonUsers') || '{}');
+
+    if (isLoginMode) {
+      if (users[user] && users[user] === pass) {
+        showLoggedIn(user);
+        els.authModal.style.display = 'none';
+        resetForm();
+      } else {
+        els.authError.textContent = "Incorrect username or password";
+        els.authError.style.display = 'block';
+      }
+    } else {
+      if (users[user]) {
+        els.authError.textContent = "Username already taken";
+        els.authError.style.display = 'block';
+      } else {
+        users[user] = pass;
+        // Save email if provided (for future use)
+        if (email) users[`${user}_email`] = email;
+        localStorage.setItem('neonUsers', JSON.stringify(users));
+        showLoggedIn(user);
+        els.authModal.style.display = 'none';
+        resetForm();
+      }
+    }
+  });
+
+  // Rest of your cart & checkout logic remains unchanged...
+  // (Add-to-cart, renderCart, proceedCheckout, payNow, etc.)
+
+  document.querySelectorAll('.add-to-cart').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const name  = btn.dataset.name;
+      const price = Number(btn.dataset.price);
+      const existing = cart.find(i => i.name === name);
+      if (existing) existing.qty += 1;
+      else cart.push({ name, price, qty: 1 });
+      els.cartCount.textContent = cart.reduce((s, i) => s + i.qty, 0);
+      const orig = btn.textContent;
+      btn.textContent = 'Added ✓';
+      setTimeout(() => btn.textContent = orig, 1200);
+    });
+  });
+
+  function renderCart() {
+    els.cartItems.innerHTML = '';
+    if (cart.length === 0) {
+      els.cartItems.innerHTML = '<div class="empty-cart">Your cart is empty</div>';
+      els.cartTotal.textContent = 'Total: ₹0';
+      return;
+    }
+    let total = 0;
+    cart.forEach((item, index) => {
+      const itemTotal = item.price * item.qty;
+      total += itemTotal;
+      const itemEl = document.createElement('div');
+      itemEl.className = 'cart-item';
+      itemEl.innerHTML = `
+        <span>${item.name} × ${item.qty}</span>
+        <span>₹${itemTotal.toLocaleString()}</span>
+        <button class="remove-btn" data-index="${index}"><i class="fas fa-trash"></i></button>
+      `;
+      els.cartItems.appendChild(itemEl);
+    });
+    els.cartTotal.textContent = `Total: ₹${total.toLocaleString()}`;
+    document.querySelectorAll('.remove-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const index = parseInt(btn.dataset.index);
+        cart.splice(index, 1);
+        renderCart();
+        els.cartCount.textContent = cart.reduce((s, i) => s + i.qty, 0);
+      });
+    });
+  }
+
+  els.cartBtn.addEventListener('click', () => {
+    renderCart();
+    els.cartModal.style.display = 'flex';
+  });
+
+  els.closeCart.addEventListener('click', () => els.cartModal.style.display = 'none');
+  els.cartModal.addEventListener('click', e => { if (e.target === els.cartModal) els.cartModal.style.display = 'none'; });
+
+  els.proceedCheckout.addEventListener('click', () => {
+    els.cartModal.style.display = 'none';
+    els.checkoutSection.style.display = 'block';
+    window.scrollTo({ top: els.checkoutSection.offsetTop - 80, behavior: 'smooth' });
+
+    if (!currentUser) {
+      els.loginRequired.style.display = 'block';
+      els.orderSummary.style.display = 'none';
+      els.upiQrContainer.style.display = 'none';
+      els.payNow.style.display = 'none';
+      return;
+    }
+
+    els.loginRequired.style.display = 'none';
+    let html = '<h3>Order Summary</h3>';
+    let total = 0;
+    cart.forEach(item => {
+      const sum = item.price * item.qty;
+      total += sum;
+      html += `<p>${item.name} × \( {item.qty} — ₹ \){sum.toLocaleString()}</p>`;
+    });
+    html += `<h3 style="margin-top:1.5rem; color:var(--price);">Total: ₹${total.toLocaleString()}</h3>`;
+    els.orderSummary.innerHTML = html;
+    els.orderSummary.style.display = 'block';
+    els.upiQrContainer.style.display = 'block';
+    els.payNow.style.display = 'block';
+  });
+
+  els.payNow.addEventListener('click', () => {
+    const totalAmount = cart.reduce((s, i) => s + i.price * i.qty, 0).toLocaleString();
+    const orderId = 'NS' + Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+    let productList = cart.map(item => item.qty > 1 ? `${item.name} × ${item.qty}` : item.name).join('\n');
+    const telegramText = encodeURIComponent(
+         `🛒 New Order from DREAM Store!\n\n` +
+      `Order ID: ${orderId}\n` +
+      `Customer: ${currentUser ? currentUser.username : 'Guest'}\n` +
+      `Products:\n${productList}\n` +
+      `Total Amount: ₹${totalAmount}\n` +
+      `Payment Method: REDEEM CODE  ( Payment )\n\n` +
+      `Please confirm the order and send payment screenshot/proof.\n` +
+      `Thank you! ✨`
+    );
+
+    // Open Telegram chat with pre-filled message
+    window.open(`https://t.me/itzdreammods?text=${telegramText}`, '_blank');
+
+    els.paymentMessage.style.display = 'block';
+    els.paymentMessage.innerHTML = `Telegram chat opened!<br>Please send payment screenshot there.<br>Thank you for shopping! 🎉`;
+  });
+</script>
+
+</body>
+</html>

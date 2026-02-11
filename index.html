@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Dream STORE  Menu</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+<style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background:linear-gradient(to bottom right, #000000,#000000);
+      color: Black;
+      text-align: center;
+    }
+
+    .menu-container {
+      padding: 20px;
+    }
+
+    .title {
+      font-family: 'THUNDER', sans-serif;
+      font-size: 48px;
+      margin-bottom: 30px;
+      color: #00DDFF;
+      letter-spacing: 2px;
+      text-shadow: 10 10 10px #00ffff;
+    }
+
+    .menu-cards {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .menu-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid #0800FF;
+      border-radius: 16px;
+      padding: 20px;
+      width: 200px;
+      height: 200px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .menu-card img {
+      width: 180px;
+      height: 180px;
+      object-fit: contain;
+    }
+
+    .menu-card p {
+      margin-top: 18px;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .menu-card:hover {
+      transform: scale(1.05);
+    }
+
+    .menu-card a {
+      color: white;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .blink {
+      animation: blink-red 0.5s ease-in-out 3;
+    }
+
+    @keyframes blink-red {
+      0%, 100% { filter: none; }
+      50% { filter: drop-shadow(0 0 10px red) saturate(2); }
+    }
+
+    .social-buttons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .social-buttons button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 18px;
+      background: #6300FF;
+      border: none;
+      color: gold;
+      font-weight: bold;
+      border-radius: 40% 10% 40% 10%;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+      font-size: 14px;
+    }
+
+    .social-buttons button:hover {
+      background: #FFF017;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+ <div class="menu-container">
+    <h2 class="title">WELCOME</h2>
+
+    <div class="menu-cards">
+      <div class="menu-card" onclick="blinkImage(this)">
+        <a href="games.html">
+          <img alt="dreamstore" />
+          <p>YASH X DREAM STORE</p>
+        </a>
+      </div>
+      <div class="menu-card" onclick="blinkImage(this)">
+        <a href="mod.html">
+  <img  alt="Mod creator" />
+          <p>MOD CREATOR</p>
+        </a>
+      </div>
+    <div class="menu-card" onclick="blinkImage(this)">
+        <a href="moding.html">
+  <img  alt="Moding" />
+          <p>MODING STOREE </p>
+        </a>
+      </div>
+        </a>
+      </div>
+        </a>
+      </div>
+    </div> 
+     
+
+
+    <div class="social-buttons">
+      <button onclick="window.open('https://youtube.com/@dreammods99?si=ICUGzUuCWWZXO8Ew')">
+        <i class="fab fa-youtube"></i> OWNER 
+      </button>
+    </div>
+  </div>
+ </div>
+
+
+
+  <div class="social-buttons">
+      <button onclick="window.open('https://youtube.com/@justgamerz123?si=zwFeuXsDwx7HVOph')">
+        <i class="fab fa-youtube"></i> CO-OWNER
+      </button>
+    </div>
+ </div>
+ </div>
+<script>
+    function blinkImage(card) {
+      const img = card.querySelector("img");
+      img.classList.remove('blink');
+      void img.offsetWidth;
+      img.classList.add('blink');
+   }
+ <script>
+    function blinkImage(card) {
+      const img = card.querySelector("img");
+      img.classList.remove('blink');
+      void img.offsetWidth;
+      img.classList.add('blink');
+   }
+    <script>
+   
+     // Play background music after first tap
+    const bgMusic = document.getElementById('bgMusic');
+    document.addEventListener("click", function startMusicOnce() {
+      bgMusic.volume = 0.5;
+      bgMusic.play().catch(() => {});
+      document.removeEventListener("click", startMusicOnce); // Ensure it plays only once
+    });
+
+    // Pause music if app is minimized or hidden
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        bgMusic.pause();
+      } else {
+        bgMusic.play().catch(() => {});
+      }
+    });
+  </script>
+</body>
+</html>
