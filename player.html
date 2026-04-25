@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Player Editor</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<style>
+:root{--bg:#0d1117;--card:#161b22;--accent:#58a6ff;--text:#dbe7ff;--border:#334155}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Segoe UI;background:linear-gradient(135deg,#0d1117,#111827);color:var(--text);padding:16px}
+.container{max-width:950px;margin:auto;background:rgba(22,27,34,.92);padding:22px;border-radius:24px;border:1px solid var(--border)}
+h1{text-align:center;color:var(--accent);margin-bottom:18px}
+.section{background:#111827;padding:15px;border-radius:18px;margin-bottom:14px;border:1px solid var(--border)}
+h3{margin-bottom:10px;color:#8ec5ff}
+label{display:block;margin-top:10px;font-weight:700;font-size:13px}
+input,select{width:100%;padding:13px;margin-top:6px;border-radius:12px;background:#0f172a;color:#fff;border:1px solid #334155}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{display:block;width:100%;padding:16px;border:none;border-radius:14px;margin-top:16px;background:linear-gradient(90deg,#2563eb,#7c3aed);color:#fff;font-weight:800}
+.back-btn,.history-btn{display:inline-block;padding:12px 16px;background:#1d1f28;color:#fff;text-decoration:none;border-radius:12px;margin-bottom:15px;border:none}
+.hide{display:none}
+#teamMenu{margin-top:10px;background:#0b1220;border-radius:18px;border:1px solid #334155;max-height:420px;overflow-y:auto;padding:8px;-webkit-overflow-scrolling:touch}
+#teamMenu div[onclick]{padding:12px;border-radius:12px;cursor:pointer;margin-bottom:4px}
+#teamMenu div[onclick]:hover{background:#1e293b}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:999}
+.modal-box{background:#161b22;max-width:800px;margin:40px auto;padding:20px;border-radius:20px;width:92%;max-height:80vh;overflow:auto}
+.item{padding:12px;border-bottom:1px solid #333;white-space:pre-line}
+#face_grid{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;margin-top:8px;max-height:160px;overflow-y:auto;padding:4px;border:1px solid #334155;border-radius:12px;}
+#face_grid button{padding:8px;border-radius:6px;background:#0f172a;color:#fff;border:1px solid #334155;cursor:pointer;}
+#face_preview{position:relative;width:120px;height:120px;border-radius:12px;background:#334155;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:bold;font-size:24px;transition: transform 0.3s, opacity 0.3s;}
+#face_preview img{width:100%;height:100%;border-radius:12px;object-fit:cover;}
+#face_preview span{position:absolute;top:4px;right:6px;color:#fff;font-weight:bold;font-size:16px;}
+.face-animate{animation:fadeIn 0.3s ease-in-out;}
+@keyframes fadeIn{from{opacity:0;transform:scale(0.9);}to{opacity:1;transform:scale(1);}}
+@media(max-width:700px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+<a href="mod.html" class="back-btn">← Back</a>
+<button class="history-btn" onclick="openHistory()">📜 Request History</button>
+<h1>PLAYER EDITOR</h1>
+
+<!-- Player Info Section -->
+<div class="section">
+<h3>Player Info</h3>
+<label>Player Name</label>
+<input id="p_name">
+<label>Select Team</label>
+<button type="button" onclick="toggleTeamMenu()" id="teamToggle" class="back-btn" style="width:100%;text-align:left">Select Team ▼</button>
+<div id="teamMenu" class="hide">
+<div style="padding:10px;font-weight:800;color:#58a6ff;">INTERNATIONAL</div>
+<div onclick="setTeam('India')">India</div>
+<div onclick="setTeam('Australia')">Australia</div>
+<div onclick="setTeam('England')">England</div>
+<div onclick="setTeam('Pakistan')">Pakistan</div>
+<div onclick="setTeam('South Africa')">South Africa</div>
+<div onclick="setTeam('New Zealand')">New Zealand</div>
+<div onclick="setTeam('Sri Lanka')">Sri Lanka</div>
+<div onclick="setTeam('Bangladesh')">Bangladesh</div>
+<div onclick="setTeam('Afghanistan')">Afghanistan</div>
+<div style="padding:10px;font-weight:800;color:#f59e0b;">IPL</div>
+<div onclick="setTeam('CSK')">CSK</div>
+<div onclick="setTeam('Mumbai Indians')">Mumbai Indians</div>
+<div onclick="setTeam('RCB')">RCB</div>
+<div onclick="setTeam('KKR')">KKR</div>
+<div onclick="setTeam('SRH')">SRH</div>
+<div onclick="setTeam('Delhi Capitals')">Delhi Capitals</div>
+<div onclick="setTeam('Punjab Kings')">Punjab Kings</div>
+<div onclick="setTeam('GUJARAT TITANS')">Gujarat Titans</div>
+<div onclick="setTeam('Lucknow Super Giants')">Lucknow Super Giants</div>
+<div onclick="setTeam('Rajasthan Royals')">Rajasthan Royals</div>
+<div style="padding:10px;font-weight:800;color:#22c55e;">PSL</div>
+<div onclick="setTeam('Peshawar Zalmi')">Peshawar Zalmi</div>
+<div onclick="setTeam('Multan Sultans')">Multan Sultans</div>
+<div onclick="setTeam('Islamabad United')">Islamabad United</div>
+<div onclick="setTeam('Lahore Qalandars')">Lahore Qalandars</div>
+<div onclick="setTeam('Quetta Gladiators')">Quetta Gladiators</div>
+<div onclick="setTeam('Hyderabad Kingsmen')">Hyderabad Kingsmen</div>
+<div onclick="setTeam('Karachi Kings')">Karachi Kings</div>
+<div onclick="setTeam('Rawalpindiz')">Rawalpindiz</div>
+<div style="padding:10px;font-weight:800;color:#e879f9;">MASTERS</div>
+<div onclick="setTeam('India Legends')">India Legends</div>
+<div onclick="setTeam('Pakistan Legends')">Pakistan Legends</div>
+<div onclick="setTeam('Dream Empire')">Dream Empire</div>
+</div>
+<input type="hidden" id="team">
+<label>Player Role</label>
+<select id="role" onchange="checkRole()"><option>Batsman</option><option>Bowler</option><option>All-rounder</option><option>Wicket Keeper</option></select>
+</div>
+
+<!-- Batting Section -->
+<div class="section">
+<h3>Batting</h3>
+<label>Batting Style</label><select id="bat_style"><option>Balanced</option><option>Radical</option><option>Brute</option><option>Defensive</option></select>
+<div class="grid">
+<div><label>Timing</label><input id="timing"></div>
+<div><label>Aggression</label><input id="aggression"></div>
+</div>
+<label>Technique</label><input id="technique">
+</div>
+
+<!-- Hands + Face Section -->
+<div class="section">
+<h3>Hands + Face</h3>
+<div class="grid">
+  <div>
+    <label>Bat Hand</label>
+    <select id="bat_hand"><option>Right Bat</option><option>Left Bat</option></select>
+  </div>
+  <div>
+    <label>Bowl Hand</label>
+    <select id="bowl_hand"><option>Right Bowl</option><option>Left Bowl</option></select>
+  </div>
+</div>
+
+<div class="grid" style="align-items:center;gap:10px">
+  <div>
+    <label>Face Type</label>
+    <select id="face_type" onchange="updateFaceType()">
+      <option value="preset">Preset</option>
+      <option value="custom">Custom</option>
+    </select>
+  </div>
+  <div>
+    <label>Selected Face</label>
+    <div style="display:flex;align-items:center;gap:4px">
+      <button onclick="changeFace(-1)">⬆</button>
+      <div id="face_preview">
+        <img id="face_img" src="face1.png" alt="">
+        <span id="face_number">1</span>
+        <span id="coming_soon" style="display:none;">Coming Soon</span>
+      </div>
+      <button onclick="changeFace(1)">⬇</button>
+    </div>
+  </div>
+</div>
+
+<div id="face_grid"></div>
+</div>
+
+<!-- Bowling Section -->
+<div id="bowling" class="section hide">
+<h3>Bowling</h3>
+<label>Bowling Style</label>
+<select id="b_style" onchange="updateBowlingActions()">
+<option value="">Select</option><option value="fast">Fast</option><option value="fastmedium">Fast Medium</option><option value="medium">Medium</option><option value="spin">Spin</option>
+</select>
+<label>Bowling Action</label>
+<select id="b_action"><option>Select Bowling Action</option></select>
+<div class="grid">
+<div><label>Movement</label><input id="movement" value="99"></div>
+<div><label>Accuracy</label><input id="accuracy" value="99"></div>
+</div>
+</div>
+<label>Jersey Number</label><input id="jersey" type="number">
+<button class="btn" onclick="sendPlayer()">🚀 Send Full Mod Request</button>
+</div>
+
+<!-- History Modal -->
+<div class="modal" id="historyModal">
+<div class="modal-box">
+<button class="back-btn" onclick="closeHistory()">Close</button>
+<h2>Player Request History</h2>
+<div id="historyList"></div>
+</div>
+</div>
+
+<script>
+// Core Player Editor Functions
+function toggleTeamMenu(){document.getElementById('teamMenu').classList.toggle('hide')}
+function setTeam(n){team.value=n;teamToggle.innerText=n+' ▼';teamMenu.classList.add('hide')}
+function checkRole(){let r=role.value;document.getElementById('bowling').classList.toggle('hide',!(r==='Bowler'||r==='All-rounder'))}
+function updateBowlingActions(){let a={fast:['Shaheen Afridi','Adam Milne','Mark Wood','Pat Cummins','Haris Rauf','Mitchell Starc','Jasprit Bumrah','Jofra Archer','Kagiso Rabada','Lasith Malinga'],fastmedium:['Arshdeep Singh','Hardik Pandya','Paul Collingwood','Bhuvneshwar Kumar','Shane Watson'],medium:['Arshdeep Singh','Hardik Pandya','Paul Collingwood','Bhuvneshwar Kumar','Shane Watson'],spin:['Glenn Maxwell','Ravindra Jadeja','Axar Patel','Keshav Maharaj','Maheesh Theekshana','Shadab Khan','Kuldeep Yadav','Ish Sodhi','Yuzvendra Chahal','Wanindu Hasaranga','Shane Warne']};b_action.innerHTML='<option>Select Bowling Action</option>';(a[b_style.value]||[]).forEach(x=>{let o=document.createElement('option');o.text=x;b_action.add(o)})}
+function v(id){return document.getElementById(id).value||'N/A'}
+function savePlayerHistory(){let arr=JSON.parse(localStorage.getItem('playerSubmissions'))||[];arr.push({name:v('p_name'),team:v('team'),jersey:v('jersey'),role:v('role'),batStyle:v('bat_style'),timing:v('timing'),aggression:v('aggression'),technique:v('technique'),batHand:v('bat_hand'),bowlHand:v('bowl_hand'),faceType:v('face_type'),faceId:selectedFace,bowlStyle:v('b_style'),bowlAction:v('b_action'),movement:v('movement'),accuracy:v('accuracy'),time:new Date().toLocaleString()});localStorage.setItem('playerSubmissions',JSON.stringify(arr));}
+function sendPlayer(){savePlayerHistory();let msg=`🏏 DREAM MODS FULL PLAYER MOD REQUEST\n\n👤 PLAYER INFO\nName: ${v('p_name')}\nTeam: ${v('team')}\nJersey: ${v('jersey')}\nRole: ${v('role')}\n\n🏏 BATTING\nStyle: ${v('bat_style')}\nTiming: ${v('timing')}\nAggression: ${v('aggression')}\nTechnique: ${v('technique')}\n\n✋ HANDS\nBat Hand: ${v('bat_hand')}\nBowl Hand: ${v('bowl_hand')}\n\n🎭 FACE\nFace Type: ${v('face_type')}\nFace ID: ${selectedFace}\n\n🎯 BOWLING\nBowling Style: ${v('b_style')}\nBowling Action: ${v('b_action')}\nMovement: ${v('movement')}\nAccuracy: ${v('accuracy')}`;window.open('https://t.me/Customplayer99?text='+encodeURIComponent(msg),'_blank');}
+function openHistory(){let arr=JSON.parse(localStorage.getItem('playerSubmissions'))||[];historyList.innerHTML='';if(!arr.length)historyList.innerHTML='<div class=item>No history</div>';arr.forEach((p,i)=>{historyList.innerHTML+=`<div class='item'>#${i+1}\n🏏 DREAM MODS FULL PLAYER MOD REQUEST\n\n👤 PLAYER INFO\nName: ${p.name}\nTeam: ${p.team}\nJersey: ${p.jersey}\nRole: ${p.role}\n\n🏏 BATTING\nStyle: ${p.batStyle}\nTiming: ${p.timing}\nAggression: ${p.aggression}\nTechnique: ${p.technique}\n\n✋ HANDS\nBat Hand: ${p.batHand}\nBowl Hand: ${p.bowlHand}\n\n🎭 FACE\nFace Type: ${p.faceType}\nFace ID: ${p.faceId}\n\n🎯 BOWLING\nBowling Style: ${p.bowlStyle}\nBowling Action: ${p.bowlAction}\nMovement: ${p.movement}\nAccuracy: ${p.accuracy}</div>`});historyModal.style.display='block';}
+function closeHistory(){historyModal.style.display='none'}
+
+// ===== Face Preview + Animation =====
+let selectedFace = 1;
+const MAX_FACE = 80;
+const faceGrid = document.getElementById('face_grid');
+const faceImg = document.getElementById('face_img');
+const faceNumber = document.getElementById('face_number');
+const comingSoon = document.getElementById('coming_soon');
+const faceTypeSelect = document.getElementById('face_type');
+
+// Generate 1-80 grid buttons
+for(let i=1;i<=MAX_FACE;i++){
+  const btn = document.createElement('button');
+  btn.innerText = i;
+  btn.onclick = () => { selectedFace = i; updateFacePreview(); }
+  faceGrid.appendChild(btn);
+}
+
+// Update preview with animation
+function updateFacePreview(){
+  const preview = document.getElementById('face_preview');
+  preview.classList.remove('face-animate');
+  void preview.offsetWidth; // force reflow to restart animation
+  preview.classList.add('face-animate');
+
+  if(faceTypeSelect.value==='preset'){
+    faceImg.src = `faces/face${selectedFace}.png`; // Replace with actual image paths
+    faceImg.style.display='block';
+    faceNumber.style.display='block';
+    faceNumber.innerText = selectedFace;
+    comingSoon.style.display='none';
+  } else {
+    faceImg.style.display='none';
+    faceNumber.style.display='none';
+    comingSoon.style.display='block';
+  }
+}
+
+// Up/Down buttons
+function changeFace(delta){
+  if(faceTypeSelect.value!=='preset') return;
+  selectedFace += delta;
+  if(selectedFace<1) selectedFace=1;
+  if(selectedFace>MAX_FACE) selectedFace=MAX_FACE;
+  updateFacePreview();
+}
+
+// Show/hide grid based on type
+function updateFaceType(){
+  faceGrid.style.display = faceTypeSelect.value==='preset' ? 'grid' : 'none';
+  updateFacePreview();
+}
+
+// Initialize
+updateFaceType();
+</script>
+</body>
+</html>

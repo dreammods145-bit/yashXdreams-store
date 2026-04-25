@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cricket X 26 | V5 Official Patch</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <style>
+        :root { --accent: #38bdf8; --bg-dark: #020617; }
+        body { 
+            background-color: var(--bg-dark); 
+            background-image: radial-gradient(circle at 50% -20%, #1e293b 0%, #020617 80%); 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            color: white; 
+            scroll-behavior: smooth; 
+            overflow-x: hidden;
+        }
+        .glass { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .spec-chip { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); padding: 6px 12px; border-radius: 8px; font-size: 11px; color: #94a3b8; font-weight: 700; text-transform: uppercase; }
+        
+        /* Navigation Buttons Over Screenshot */
+        .nav-btn-over {
+            position: absolute;
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 800;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            color: white;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            z-index: 30;
+            cursor: pointer;
+        }
+        .nav-btn-over:hover { background: var(--accent); color: #020617; transform: translateY(-50%) scale(1.1) !important; box-shadow: 0 0 20px rgba(56, 189, 248, 0.4); }
+
+        /* Animations */
+        @keyframes imgFade {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .animate-gallery { animation: imgFade 0.5s ease-out forwards; }
+
+        #lightbox { 
+            display: none; 
+            position: fixed; 
+            inset: 0; 
+            background: rgba(0, 0, 0, 0.98); 
+            z-index: 9999; 
+            align-items: center; 
+            justify-content: center; 
+            backdrop-filter: blur(20px); 
+        }
+
+        .ss-main-container {
+            position: relative;
+            background: #000;
+            border-radius: 28px;
+            overflow: hidden;
+            border: 2px solid rgba(56, 189, 248, 0.2);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+/* --- Lightbox / Fullscreen Overlay --- */
+#lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(15px);
+    animation: fadeIn 0.3s ease-out;
+}
+
+#lightboxImg {
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: zoomIn 0.4s ease-out;
+}
+
+/* --- Navigation Buttons inside Lightbox --- */
+.nav-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.nav-btn:hover {
+    background: #38bdf8; /* sky-400 */
+    color: #020617;
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+    transform: scale(1.1);
+}
+
+/* --- Cards (Master Unlock & Guide) --- */
+.unlock-card {
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.1) 0%, rgba(2, 6, 23, 0.6) 100%);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.unlock-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(56, 189, 248, 0.6);
+}
+
+.glass {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+}
+
+.glass:hover {
+    background: rgba(15, 23, 42, 0.8);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* --- Animations --- */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes zoomIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* --- Iframe container styling --- */
+iframe {
+    filter: grayscale(20%);
+    transition: filter 0.3s ease;
+}
+
+.glass:hover iframe {
+    filter: grayscale(0%);
+}
+
+    </style>
+</head>
+<body class="p-4 md:p-10">
+
+    <div class="max-w-4xl mx-auto">
+        <div class="flex items-center justify-between mb-8">
+            <a href="index.html" class="text-slate-400 font-extrabold text-sm hover:text-sky-400 transition flex items-center gap-2">
+                <span>←</span> BACK TO STORE
+            </a>
+            <div class="spec-chip text-sky-400 border-sky-500/30">V5.0.0 Stable</div>
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-8 items-center md:items-end mb-12">
+            <img src="icon_Cx26.png" class="w-36 h-36 rounded-[35px] border-4 border-sky-500/20" onerror="this.src='https://img.icons8.com/fluency/180/cricket-ball.png'">
+            <div class="text-center md:text-left flex-1">
+                <h1 class="text-3xl font-black tracking-tight mb-3 uppercase">CRICKET X 26</h1>
+                <div class="flex flex-wrap justify-center md:justify-start gap-2 mb-6">
+                    <span class="spec-chip">450 MB</span>
+                    <span class="spec-chip">Full Unlocked</span>
+                    <span class="spec-chip">Android 16.0+</span>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
+                    <a href="https://www.mediafire.com/file/a0vmrnrfl4ahczn/CRICKET_X_26__V5_.apk/file" class="bg-sky-500 hover:bg-sky-400 text-slate-950 px-8 py-4 rounded-2xl font-black transition-all shadow-lg shadow-sky-500/20 text-center uppercase tracking-tighter">Download APK</a>
+                    <a href="https://www.mediafire.com/file/c0siu2x3qac3w2n/CRICKET_X%25E2%2584%25A2_25_Data_Full_Unlocked.zip/file" class="bg-slate-800 hover:bg-slate-700 text-white px-8 py-4 rounded-2xl font-black transition-all border border-slate-600 text-center uppercase tracking-tighter">Unlock All File</a>
+                </div>
+            </div>
+        </div>
+  <div class="mb-12 reveal delay-2">
+            <h3 class="text-xs font-black text-sky-500 uppercase tracking-[3px] mb-6">Official Trailer</h3>
+            <div class="aspect-video w-full">
+                <iframe class="w-full h-full shadow-2xl" 
+                    src="https://www.youtube.com/embed/pwEFemkjm_w" 
+                    title="YouTube video player" frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    allowfullscreen></iframe>
+            </div>
+        </div>
+
+        <div class="mb-12">
+            <h3 class="text-xs font-black text-sky-500 uppercase tracking-[3px] mb-6">Gameplay Preview</h3>
+
+            <div class="ss-main-container aspect-video md:h-[480px] group">
+                <button onclick="changeImg(-1)" class="nav-btn-over top-1/2 left-6 -translate-y-1/2">Prev</button>
+                
+                <img id="mainDisplay" src="Cx26_screenshot1.jpg" class="w-full h-full object-cover transition-all duration-500 cursor-pointer" onclick="openLightbox()">
+                
+                <button onclick="openLightbox()" class="nav-btn-over top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 scale-90 group-hover:scale-100">
+                    View Fullscreen
+                </button>
+                
+                <button onclick="changeImg(1)" class="nav-btn-over top-1/2 right-6 -translate-y-1/2">Next</button>
+
+                <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3 bg-black/60 backdrop-blur-md px-4 py-3 rounded-full border border-white/10 z-10">
+                   <div id="dot0" class="w-2.5 h-2.5 rounded-full bg-sky-500 transition-all duration-300"></div>
+                   <div id="dot1" class="w-2.5 h-2.5 rounded-full bg-white/20 transition-all duration-300"></div>
+                   <div id="dot2" class="w-2.5 h-2.5 rounded-full bg-white/20 transition-all duration-300"></div>
+                   <div id="dot3" class="w-2.5 h-2.5 rounded-full bg-white/20 transition-all duration-300"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="lightbox">
+            <button onclick="closeLightbox()" class="absolute top-8 left-8 bg-white/10 hover:bg-sky-500 hover:text-black text-white px-6 py-3 rounded-xl font-black text-xs tracking-widest transition-all z-[10000]">
+                ← CLOSE PREVIEW
+            </button>
+            
+            <div class="relative flex items-center justify-center w-full h-full p-4 md:p-12">
+                <button onclick="changeImg(-1)" class="absolute left-4 md:left-10 text-white/30 hover:text-sky-400 text-6xl font-thin transition z-50">‹</button>
+                
+                <img id="lightboxImg" src="" class="max-h-full max-w-full rounded-lg shadow-2xl animate-gallery object-contain">
+                
+                <button onclick="changeImg(1)" class="absolute right-4 md:right-10 text-white/30 hover:text-sky-400 text-6xl font-thin transition z-50">›</button>
+            </div>
+        </div>
+    </div>
+
+        <!-- Lightbox for Fullscreen -->
+        <div id="lightbox" class="flex flex-col" onclick="if(event.target == this) closeLightbox()">
+            <button onclick="closeLightbox()" class="absolute top-8 right-8 text-white/50 hover:text-white text-5xl font-light transition">&times;</button>
+            <div class="relative flex items-center justify-center w-full max-w-6xl h-[85vh] px-4">
+                <button onclick="changeImg(-1)" class="nav-btn absolute left-4 md:-left-16 z-10 p-4">←</button>
+                <img id="lightboxImg" src="" class="max-h-full max-w-full rounded-2xl shadow-2xl border border-white/10 object-contain">
+                <button onclick="changeImg(1)" class="nav-btn absolute right-4 md:-right-16 z-10 p-4">→</button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <div class="unlock-card p-8 rounded-[32px]">
+                <h3 class="text-xl font-black text-sky-400 mb-4">Master Unlock</h3>
+                <p class="text-sm text-slate-400 mb-6 leading-relaxed">Required to unlock 20+ Stadiums, PSL/IPL Squads, and ad-free career mode.</p>
+                <a href="https://www.mediafire.com/file/c0siu2x3qac3w2n/CRICKET_X%25E2%2584%25A2_25_Data_Full_Unlocked.zip/file" class="block w-full py-4 bg-white/5 hover:bg-white/10 rounded-2xl text-center font-black text-xs tracking-widest border border-white/10 transition">
+                    DOWNLOAD DATA (.ZIP)
+                </a>
+            </div>
+
+            <div class="glass p-6 rounded-[32px] flex flex-col items-center">
+                <h3 class="text-xs font-black text-slate-400 uppercase tracking-[2px] mb-4">Quick Install Guide</h3>
+                <div class="aspect-[9/16] w-full max-w-[180px] bg-black rounded-2xl overflow-hidden border border-white/5 shadow-2xl">
+                    <iframe class="w-full h-full" src="https://www.youtube.com/embed/Y2gNEbK0Rlo" frameborder="0" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-20">
+            <h3 class="text-xs font-black text-sky-500 uppercase tracking-[3px] mb-6">Patch Highlights</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="glass p-6 rounded-2xl flex items-start gap-4">
+                    <span class="text-2xl">👤</span>
+                    <div><h4 class="font-extrabold text-sky-400">2026 Kits</h4><p class="text-xs text-slate-400 mt-1">Realistic 4K textures for all teams.</p></div>
+                </div>
+                <div class="glass p-6 rounded-2xl flex items-start gap-4">
+                    <span class="text-2xl">🏆</span>
+                    <div><h4 class="font-extrabold text-sky-400">Tournament Pack</h4><p class="text-xs text-slate-400 mt-1">IPL, PSL, BBL & World Cup 2026.</p></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pb-20 border-t border-white/5 pt-10">
+            <div class="text-center">
+                <div class="text-[10px] text-slate-500 font-black uppercase mb-1">Status</div>
+                <div class="text-sm font-bold text-green-400 italic">SECURE</div>
+            </div>
+            <div class="text-center">
+                <div class="text-[10px] text-slate-500 font-black uppercase mb-1">Dev</div>
+                <div class="text-sm font-bold">DreamXYash</div>
+            </div>
+            <div class="text-center">
+                <div class="text-[10px] text-slate-500 font-black uppercase mb-1">Format</div>
+                <div class="text-sm font-bold">APK+DATA</div>
+            </div>
+            <div class="text-center">
+                <div class="text-[10px] text-slate-500 font-black uppercase mb-1">Engine</div>
+                <div class="text-sm font-bold">Unity 2026</div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        const galleryImages = [
+            "Cx26_screenshot1.jpg", 
+            "Cx26_screenshot2.jpg", 
+            "Cx26_screenshot3.jpg", 
+            "Cx26_screenshot4.jpg"
+        ];
+        
+        let currentIndex = 0;
+
+        function updateUI() {
+            const mainImg = document.getElementById('mainDisplay');
+            const lightImg = document.getElementById('lightboxImg');
+            
+            // Remove animation class to re-trigger it
+            mainImg.classList.remove('animate-gallery');
+            lightImg.classList.remove('animate-gallery');
+            
+            // Apply updates
+            void mainImg.offsetWidth; // Trigger reflow
+            mainImg.src = galleryImages[currentIndex];
+            lightImg.src = galleryImages[currentIndex];
+            
+            mainImg.classList.add('animate-gallery');
+            lightImg.classList.add('animate-gallery');
+
+            // Update dots
+            for(let i=0; i<galleryImages.length; i++) {
+                const dot = document.getElementById('dot' + i);
+                if(dot) {
+                    dot.className = i === currentIndex ? 'w-6 h-2.5 rounded-full bg-sky-500 transition-all' : 'w-2.5 h-2.5 rounded-full bg-white/20';
+                }
+            }
+        }
+
+        function changeImg(step) {
+            // Prevent event bubbling if clicked from within buttons
+            event.stopPropagation(); 
+            currentIndex = (currentIndex + step + galleryImages.length) % galleryImages.length;
+            updateUI();
+        }
+
+        function openLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            updateUI();
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('lightbox').style.display === 'flex') {
+                if (e.key === "Escape") closeLightbox();
+                if (e.key === "ArrowRight") changeImg(1);
+                if (e.key === "ArrowLeft") changeImg(-1);
+            }
+        });
+    </script>
+</body>
+</html>

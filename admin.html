@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DREAM ADMIN · Control Panel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * { font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background: #0a0c15; color: #e2e8f0; }
+    .glass-panel { background: rgba(20, 24, 35, 0.8); backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.06); border-radius: 32px; }
+    .stat-card { background: #111827; border-radius: 24px; border: 1px solid #2d3a5e; transition: 0.2s; }
+    .stat-card:hover { border-color: #38bdf8; transform: translateY(-3px); }
+    .delete-btn { background: #7f1a1a; transition: 0.2s; }
+    .delete-btn:hover { background: #b91c1c; }
+    .btn-primary { background: linear-gradient(95deg, #3b82f6, #2563eb); }
+    .modal-blur { background: rgba(0,0,0,0.85); backdrop-filter: blur(12px); }
+    .scrollbar-thin::-webkit-scrollbar { width: 5px; }
+    .scrollbar-thin::-webkit-scrollbar-track { background: #1f2937; border-radius: 10px; }
+    .scrollbar-thin::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
+    .admin-tab { padding: 10px 18px; border-radius: 40px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+    .admin-tab.active { background: #2563eb; color: white; box-shadow: 0 0 10px rgba(37,99,235,0.4); }
+    .admin-tab:not(.active):hover { background: #1e293b; }
+    input, textarea, select { background: #0f172a; border: 1px solid #334155; border-radius: 20px; padding: 10px 16px; color: white; outline: none; width: 100%; }
+    input:focus, textarea:focus { border-color: #3b82f6; }
+  </style>
+</head>
+<body class="p-5 md:p-8">
+
+<div id="adminDashboard">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="flex flex-wrap justify-between items-center mb-8 gap-4">
+      <div class="flex items-center gap-3">
+        <i class="fa-solid fa-crown text-3xl text-amber-400"></i>
+        <div>
+          <h1 class="text-2xl md:text-3xl font-black tracking-tight">DREAM ADMIN</h1>
+          <p class="text-xs text-slate-400">mod & request management system</p>
+        </div>
+      </div>
+      <div class="flex gap-3 items-center">
+        <span class="bg-emerald-500/20 text-emerald-400 px-4 py-1 rounded-full text-xs font-black"><i class="fa-regular fa-circle-check mr-1"></i> LIVE CONTROL</span>
+        <a href="index.html" class="bg-slate-700/50 text-slate-300 px-5 py-2 rounded-full text-sm font-bold hover:bg-slate-600 transition inline-flex items-center gap-1"><i class="fa-solid fa-store"></i> Back to Store</a>
+      </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
+      <div class="stat-card p-5"><div class="flex justify-between"><span class="text-slate-400 text-sm">👥 Registered Users</span><i class="fa-regular fa-user text-blue-400"></i></div><div class="text-3xl font-black mt-2" id="statUsers">0</div></div>
+      <div class="stat-card p-5"><div class="flex justify-between"><span class="text-slate-400 text-sm">📦 Mod Requests</span><i class="fa-regular fa-message text-cyan-400"></i></div><div class="text-3xl font-black mt-2" id="statModRequests">0</div></div>
+      <div class="stat-card p-5"><div class="flex justify-between"><span class="text-slate-400 text-sm">🏏 Player Edits</span><i class="fa-regular fa-id-card text-purple-400"></i></div><div class="text-3xl font-black mt-2" id="statPlayerSub">0</div></div>
+      <div class="stat-card p-5"><div class="flex justify-between"><span class="text-slate-400 text-sm">🏟️ Team Requests</span><i class="fa-regular fa-flag text-orange-400"></i></div><div class="text-3xl font-black mt-2" id="statTeamReq">0</div></div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="flex flex-wrap gap-3 mb-8 border-b border-white/10 pb-3">
+      <div class="admin-tab active" data-tab="users">📋 Registered Users</div>
+      <div class="admin-tab" data-tab="modreqs">🗂️ General Mod Requests</div>
+      <div class="admin-tab" data-tab="playersub">🎮 Player Submissions</div>
+      <div class="admin-tab" data-tab="teamsub">🏆 Team Builder Submissions</div>
+      <div class="admin-tab" data-tab="storemods">🛒 Manage Store Mods</div>
+    </div>
+
+    <!-- Users Panel -->
+    <div id="usersPanel" class="glass-panel p-5 md:p-7">
+      <div class="flex justify-between items-center flex-wrap gap-3 mb-5">
+        <h3 class="text-xl font-bold"><i class="fa-regular fa-address-card mr-2"></i> Registered users (with passwords)</h3>
+        <button onclick="clearAllUsers()" class="text-red-400 text-xs border border-red-500/40 px-3 py-1 rounded-full hover:bg-red-500/20">DELETE ALL USERS</button>
+      </div>
+      <div id="usersList" class="space-y-3 max-h-[450px] overflow-y-auto pr-2 scrollbar-thin"></div>
+    </div>
+
+    <!-- General Mod Requests Panel -->
+    <div id="modreqsPanel" class="glass-panel p-5 md:p-7 hidden">
+      <div class="flex justify-between items-center flex-wrap gap-3 mb-5">
+        <h3 class="text-xl font-bold"><i class="fa-regular fa-note-sticky mr-2"></i> Quick mod requests (from Mod Creator)</h3>
+        <button onclick="clearAllModRequests()" class="text-red-400 text-xs border border-red-500/40 px-3 py-1 rounded-full hover:bg-red-500/20">CLEAR ALL</button>
+      </div>
+      <div id="modRequestsList" class="space-y-3 max-h-[450px] overflow-y-auto scrollbar-thin"></div>
+    </div>
+
+    <!-- Player Submissions Panel -->
+    <div id="playersubPanel" class="glass-panel p-5 md:p-7 hidden">
+      <div class="flex justify-between items-center flex-wrap gap-3 mb-5">
+        <h3 class="text-xl font-bold"><i class="fa-regular fa-futbol mr-2"></i> Detailed Player submissions (player.html)</h3>
+        <button onclick="clearAllPlayerSubmissions()" class="text-red-400 text-xs border border-red-500/40 px-3 py-1 rounded-full hover:bg-red-500/20">DELETE ALL</button>
+      </div>
+      <div id="playerSubList" class="space-y-4 max-h-[550px] overflow-y-auto scrollbar-thin"></div>
+    </div>
+
+    <!-- Team Builder Submissions Panel -->
+    <div id="teamsubPanel" class="glass-panel p-5 md:p-7 hidden">
+      <div class="flex justify-between items-center flex-wrap gap-3 mb-5">
+        <h3 class="text-xl font-bold"><i class="fa-regular fa-building mr-2"></i> Team edit requests (Team Builder)</h3>
+        <button onclick="clearAllTeamRequests()" class="text-red-400 text-xs border border-red-500/40 px-3 py-1 rounded-full hover:bg-red-500/20">DELETE ALL</button>
+      </div>
+      <div id="teamRequestsList" class="space-y-3 max-h-[550px] overflow-y-auto scrollbar-thin"></div>
+    </div>
+
+    <!-- Manage Store Mods Panel -->
+    <div id="storemodsPanel" class="glass-panel p-5 md:p-7 hidden">
+      <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
+        <h3 class="text-xl font-bold"><i class="fa-solid fa-cart-shopping mr-2"></i> Store Mods (displayed on index)</h3>
+        <button onclick="openModModal()" class="bg-emerald-600 hover:bg-emerald-500 px-5 py-2 rounded-full text-sm font-bold"><i class="fa-regular fa-plus mr-1"></i> ADD NEW MOD</button>
+      </div>
+      <div id="storeModsList" class="grid md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal for Add/Edit Mod -->
+<div id="modModal" class="fixed inset-0 modal-blur hidden items-center justify-center z-[10000] p-4">
+  <div class="glass-panel w-full max-w-lg p-6 relative max-h-[90vh] overflow-y-auto">
+    <div class="flex justify-between"><h3 class="text-xl font-bold" id="modalTitle">Add New Mod</h3><button onclick="closeModModal()" class="text-slate-400 text-2xl">&times;</button></div>
+    <div class="space-y-4 mt-5">
+      <input type="text" id="modTitle" placeholder="Mod Title (ex: Cricket X 26)">
+      <input type="text" id="modVersion" placeholder="Version (ex: v5.0)">
+      <textarea id="modDesc" rows="2" placeholder="Short description..."></textarea>
+      <input type="text" id="modIconUrl" placeholder="Icon URL (png/jpg)">
+      <input type="text" id="modScreenshotUrl" placeholder="Screenshot Image URL">
+      <input type="text" id="modDownloadLink" placeholder="Download link (ex: CX26.html)">
+      <div class="grid grid-cols-2 gap-3">
+        <button onclick="saveMod()" class="btn-primary py-3 rounded-xl font-bold">SAVE MOD</button>
+        <button onclick="closeModModal()" class="bg-slate-700 py-3 rounded-xl font-bold">CANCEL</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ==================== Helper Functions ====================
+  function loadStats() {
+    const users = JSON.parse(localStorage.getItem("allUsers")) || [];
+    const modReqs = JSON.parse(localStorage.getItem("requests")) || [];
+    const playerSub = JSON.parse(localStorage.getItem("playerSubmissions")) || [];
+    const teamReqs = JSON.parse(localStorage.getItem("teamRequests")) || [];
+    document.getElementById("statUsers").innerText = users.length;
+    document.getElementById("statModRequests").innerText = modReqs.length;
+    document.getElementById("statPlayerSub").innerText = playerSub.length;
+    document.getElementById("statTeamReq").innerText = teamReqs.length;
+  }
+
+  function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
+  // ==================== USERS PANEL ====================
+  function renderUsers() {
+    const users = JSON.parse(localStorage.getItem("allUsers")) || [];
+    const container = document.getElementById("usersList");
+    if(!users.length) {
+      container.innerHTML = `<div class="text-center p-8 text-slate-500"><i class="fa-regular fa-face-smile text-4xl mb-2 block"></i>No registered users yet</div>`;
+      return;
+    }
+    container.innerHTML = users.map((u, idx) => `
+      <div class="bg-slate-800/40 rounded-2xl p-4 border border-white/5">
+        <div class="flex flex-wrap justify-between items-start gap-3">
+          <div class="flex-1">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="font-bold text-lg">${escapeHtml(u.username)}</span>
+              <span class="text-xs bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-full">${escapeHtml(u.email)}</span>
+              <span class="text-xs bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full"><i class="fa-regular fa-key"></i> ${escapeHtml(u.password)}</span>
+            </div>
+            <div class="text-[10px] text-slate-400 mt-1">📅 joined: ${u.timestamp || 'recent'}</div>
+          </div>
+          <button onclick="deleteUser(${idx})" class="delete-btn text-xs px-4 py-2 rounded-full"><i class="fa-regular fa-trash-can"></i> Remove</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function deleteUser(idx) { let users = JSON.parse(localStorage.getItem("allUsers")) || []; users.splice(idx,1); localStorage.setItem("allUsers", JSON.stringify(users)); renderUsers(); loadStats(); }
+  function clearAllUsers() { if(confirm("Delete ALL registered users?")) { localStorage.setItem("allUsers","[]"); renderUsers(); loadStats(); } }
+
+  // ==================== GENERAL MOD REQUESTS (requests) ====================
+  function renderModRequests() {
+    let requests = JSON.parse(localStorage.getItem("requests")) || [];
+    const container = document.getElementById("modRequestsList");
+    if(!requests.length) {
+      container.innerHTML = `<div class="text-center p-6 text-slate-500"><i class="fa-regular fa-inbox text-3xl mb-2 block"></i>No mod requests yet</div>`;
+      return;
+    }
+    container.innerHTML = requests.map((req, idx) => `
+      <div class="bg-slate-800/30 p-4 rounded-2xl flex justify-between items-center border-l-4 border-cyan-500">
+        <div>
+          <span class="font-bold">${escapeHtml(req.type)} request</span>
+          <div class="text-[11px] text-slate-400">${req.time || 'no timestamp'}</div>
+        </div>
+        <button onclick="deleteModRequest(${idx})" class="bg-red-800/50 px-4 py-1.5 rounded-full text-xs hover:bg-red-700"><i class="fa-regular fa-trash-can"></i> Delete</button>
+      </div>
+    `).join('');
+  }
+
+  function deleteModRequest(idx) { let req = JSON.parse(localStorage.getItem("requests")) || []; req.splice(idx,1); localStorage.setItem("requests", JSON.stringify(req)); renderModRequests(); loadStats(); }
+  function clearAllModRequests() { if(confirm("Delete all mod requests?")) { localStorage.setItem("requests","[]"); renderModRequests(); loadStats(); } }
+
+  // ==================== PLAYER SUBMISSIONS (playerSubmissions) ====================
+  function renderPlayerSubmissions() {
+    let subs = JSON.parse(localStorage.getItem("playerSubmissions")) || [];
+    const container = document.getElementById("playerSubList");
+    if(!subs.length) {
+      container.innerHTML = `<div class="text-center p-6 text-slate-500"><i class="fa-regular fa-id-card text-3xl mb-2 block"></i>No player submissions yet</div>`;
+      return;
+    }
+    container.innerHTML = subs.map((p, idx) => `
+      <div class="bg-slate-800/40 rounded-2xl p-4 border border-white/5 hover:bg-slate-800/60 transition">
+        <div class="flex flex-wrap justify-between gap-3 items-start">
+          <div class="flex-1">
+            <div class="font-black text-lg">${escapeHtml(p.name || 'Unknown')}</div>
+            <div class="text-xs text-slate-300">🏏 ${escapeHtml(p.team || 'No team')} • #${p.jersey || '?'} • ${p.role || 'Player'}</div>
+            <div class="text-[11px] text-slate-400 mt-1">Bat: ${p.batStyle || 'N/A'} | Hand: ${p.batHand || 'right'} | FaceID: ${p.faceId || 'none'}</div>
+            <div class="text-[10px] text-slate-500 mt-1">Submitted: ${p.time || '—'}</div>
+          </div>
+          <button onclick="deletePlayerSubmission(${idx})" class="delete-btn px-4 py-2 rounded-xl text-xs font-bold"><i class="fa-regular fa-trash-can"></i> Delete</button>
+        </div>
+        ${p.bowlStyle ? `<div class="mt-2 text-xs bg-black/30 p-2 rounded-xl"><span class="text-orange-300">🎯 Bowling:</span> ${escapeHtml(p.bowlStyle)} / ${escapeHtml(p.bowlAction || '—')} (mov ${p.movement})</div>` : ''}
+      </div>
+    `).join('');
+  }
+
+  function deletePlayerSubmission(idx) { let subs = JSON.parse(localStorage.getItem("playerSubmissions")) || []; subs.splice(idx,1); localStorage.setItem("playerSubmissions", JSON.stringify(subs)); renderPlayerSubmissions(); loadStats(); }
+  function clearAllPlayerSubmissions() { if(confirm("Delete ALL player submissions?")) { localStorage.setItem("playerSubmissions","[]"); renderPlayerSubmissions(); loadStats(); } }
+
+  // ==================== TEAM BUILDER SUBMISSIONS (teamRequests) ====================
+  function renderTeamRequests() {
+    let teams = JSON.parse(localStorage.getItem("teamRequests")) || [];
+    const container = document.getElementById("teamRequestsList");
+    if(!teams.length) {
+      container.innerHTML = `<div class="text-center p-6 text-slate-500"><i class="fa-regular fa-building text-3xl mb-2 block"></i>No team requests yet</div>`;
+      return;
+    }
+    container.innerHTML = teams.map((t, idx) => `
+      <div class="bg-slate-800/30 rounded-2xl p-4 border border-white/5">
+        <div class="flex justify-between flex-wrap">
+          <div><span class="font-black text-lg">${escapeHtml(t.fullName || t.name)}</span> <span class="text-orange-400 text-sm ml-2">${escapeHtml(t.shortCode || t.shortName || '')}</span></div>
+          <button onclick="deleteTeamRequest(${idx})" class="delete-btn px-4 py-1.5 rounded-full text-xs"><i class="fa-regular fa-trash-can"></i> Remove</button>
+        </div>
+        <div class="text-sm mt-1"><span class="text-slate-400">👕 Jersey:</span> ${escapeHtml(t.jerseyStyle || t.jersey || 'Standard')}</div>
+        ${t.customDetails ? `<div class="text-xs text-slate-400 bg-black/40 p-2 rounded-xl mt-2">✏️ Custom: ${escapeHtml(t.customDetails)}</div>` : ''}
+        <div class="text-[10px] text-slate-500 mt-2">📅 ${t.time || 'recent'} ${t.logoAttached ? '🖼️ Logo attached' : ''}</div>
+      </div>
+    `).join('');
+  }
+
+  function deleteTeamRequest(idx) { let teams = JSON.parse(localStorage.getItem("teamRequests")) || []; teams.splice(idx,1); localStorage.setItem("teamRequests", JSON.stringify(teams)); renderTeamRequests(); loadStats(); }
+  function clearAllTeamRequests() { if(confirm("Delete ALL team requests?")) { localStorage.setItem("teamRequests","[]"); renderTeamRequests(); loadStats(); } }
+
+  // ==================== STORE MODS MANAGEMENT ====================
+  function getStoreMods() {
+    let mods = localStorage.getItem("dream_store_mods");
+    if(!mods) {
+      const defaultMods = [{
+        id: "mod1",
+        title: "Cricket X 26",
+        version: "v5.0 Official Patch",
+        description: "Experience UHD graphics and real-face patches for Cricket X 26.",
+        icon: "cx26_icon.png",
+        screenshot: "cx26_screenshot1.jpg",
+        downloadLink: "CX26.html"
+      }];
+      localStorage.setItem("dream_store_mods", JSON.stringify(defaultMods));
+      return defaultMods;
+    }
+    return JSON.parse(mods);
+  }
+
+  function saveStoreMods(mods) {
+    localStorage.setItem("dream_store_mods", JSON.stringify(mods));
+    renderStoreMods();
+  }
+
+  function renderStoreMods() {
+    const mods = getStoreMods();
+    const container = document.getElementById("storeModsList");
+    if(!mods.length) {
+      container.innerHTML = `<div class="col-span-full text-center p-8 text-slate-500"><i class="fa-regular fa-cart-shopping text-3xl mb-2 block"></i>No mods in store. Click + ADD NEW MOD</div>`;
+      return;
+    }
+    container.innerHTML = mods.map((mod, idx) => `
+      <div class="bg-black/40 border border-white/10 rounded-2xl overflow-hidden hover:scale-[1.01] transition">
+        <img src="${mod.screenshot || 'https://placehold.co/400x200'}" class="h-32 w-full object-cover" onerror="this.src='https://placehold.co/400x200?text=No+Preview'">
+        <div class="p-4">
+          <div class="flex gap-3 items-center">
+            <img src="${mod.icon || 'https://placehold.co/64'}" class="w-10 h-10 rounded-xl object-cover" onerror="this.src='https://placehold.co/64'">
+            <div><div class="font-black">${escapeHtml(mod.title)}</div><div class="text-[10px] text-slate-400">${mod.version}</div></div>
+          </div>
+          <p class="text-xs text-slate-300 mt-2 line-clamp-2">${mod.description}</p>
+          <div class="flex gap-2 mt-3">
+            <button onclick="editMod(${idx})" class="text-xs bg-yellow-600/40 px-3 py-1 rounded-full w-full"><i class="fa-regular fa-pen-to-square"></i> Edit</button>
+            <button onclick="deleteMod(${idx})" class="text-xs bg-red-600/40 px-3 py-1 rounded-full w-full"><i class="fa-regular fa-trash-can"></i> Del</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  let editingModIndex = null;
+  function openModModal(index = null) {
+    editingModIndex = index;
+    const mods = getStoreMods();
+    if(index !== null && mods[index]) {
+      document.getElementById("modalTitle").innerText = "Edit Mod";
+      const m = mods[index];
+      document.getElementById("modTitle").value = m.title || "";
+      document.getElementById("modVersion").value = m.version || "";
+      document.getElementById("modDesc").value = m.description || "";
+      document.getElementById("modIconUrl").value = m.icon || "";
+      document.getElementById("modScreenshotUrl").value = m.screenshot || "";
+      document.getElementById("modDownloadLink").value = m.downloadLink || "";
+    } else {
+      document.getElementById("modalTitle").innerText = "Add New Mod";
+      document.getElementById("modTitle").value = "";
+      document.getElementById("modVersion").value = "";
+      document.getElementById("modDesc").value = "";
+      document.getElementById("modIconUrl").value = "";
+      document.getElementById("modScreenshotUrl").value = "";
+      document.getElementById("modDownloadLink").value = "";
+    }
+    document.getElementById("modModal").style.display = "flex";
+  }
+  function closeModModal() { document.getElementById("modModal").style.display = "none"; editingModIndex = null; }
+  function saveMod() {
+    const title = document.getElementById("modTitle").value.trim();
+    if(!title) return alert("Title required");
+    const newMod = {
+      id: Date.now().toString(),
+      title: title,
+      version: document.getElementById("modVersion").value,
+      description: document.getElementById("modDesc").value,
+      icon: document.getElementById("modIconUrl").value,
+      screenshot: document.getElementById("modScreenshotUrl").value,
+      downloadLink: document.getElementById("modDownloadLink").value
+    };
+    let mods = getStoreMods();
+    if(editingModIndex !== null && mods[editingModIndex]) {
+      mods[editingModIndex] = { ...mods[editingModIndex], ...newMod, id: mods[editingModIndex].id };
+    } else {
+      mods.push(newMod);
+    }
+    saveStoreMods(mods);
+    closeModModal();
+    renderStoreMods();
+  }
+  function deleteMod(idx) { if(confirm("Delete mod from store?")) { let mods = getStoreMods(); mods.splice(idx,1); saveStoreMods(mods); } }
+  function editMod(idx) { openModModal(idx); }
+
+  // ==================== TAB SWITCHING ====================
+  function switchTab(tabId) {
+    document.querySelectorAll("#usersPanel, #modreqsPanel, #playersubPanel, #teamsubPanel, #storemodsPanel").forEach(panel => panel.classList.add("hidden"));
+    document.getElementById(`${tabId}Panel`).classList.remove("hidden");
+    document.querySelectorAll(".admin-tab").forEach(tab => tab.classList.remove("active"));
+    document.querySelector(`.admin-tab[data-tab="${tabId}"]`).classList.add("active");
+    
+    // Refresh the data when switching to a tab
+    if(tabId === "users") renderUsers();
+    if(tabId === "modreqs") renderModRequests();
+    if(tabId === "playersub") renderPlayerSubmissions();
+    if(tabId === "teamsub") renderTeamRequests();
+    if(tabId === "storemods") renderStoreMods();
+  }
+
+  // ==================== INITIAL LOAD ====================
+  window.onload = () => {
+    loadStats();
+    renderUsers();
+    renderModRequests();
+    renderPlayerSubmissions();
+    renderTeamRequests();
+    renderStoreMods();
+    
+    // Attach tab click listeners
+    document.querySelectorAll(".admin-tab").forEach(tab => {
+      tab.addEventListener("click", () => switchTab(tab.getAttribute("data-tab")));
+    });
+  };
+</script>
+</body>
+</html>

@@ -1,795 +1,290 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>DREAM MODS - Premium YASH Mods</title>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DREAM STORE | Premium Cricket Mods</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="icon" type="image/png" href="favicon.png">
   <style>
-    :root {
-      --bg: #0d1117;
-      --text: #c9d1d9;
-      --accent: #58a6ff;
-      --card: #161b22;
-      --modal-bg: rgba(0,0,0,0.85);
-      --error: #ff6b6b;
-      --success: #56d364;
-      --border: #30363d;
+    :root { 
+      --bg: #0b0d13; 
+      --card: #1c1f26; 
+      --accent: #38bdf8; 
+      --text: #e2e8f0; 
+      --border: rgba(255,255,255,0.08); 
+      --menu-bg: rgba(10, 12, 18, 0.85);
     }
-    [data-theme="light"] {
-      --bg: #f6f8fa;
-      --text: #24292e;
-      --accent: #0969da;
+
+    body.light-theme {
+      --bg: #f1f5f9;
       --card: #ffffff;
-      --modal-bg: rgba(255,255,255,0.95);
-      --error: #d73a49;
-      --success: #28a745;
-      --border: #e1e4e8;
+      --text: #0f172a;
+      --border: rgba(0,0,0,0.1);
+      --menu-bg: rgba(255, 255, 255, 0.9);
     }
 
-    * { box-sizing: border-box; margin:0; padding:0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-
-    header {
-      background: #010409;
-      padding: 1rem 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      border-bottom: 1px solid var(--border);
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+      70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
     }
-
-    .logo { font-size: 1.8rem; font-weight: 800; letter-spacing: -1px; }
-
-    .nav-desktop { display: flex; gap: 2rem; }
-    .nav-desktop a {
-      color: var(--accent);
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.2s;
-      cursor: pointer;
-    }
-    .nav-desktop a:hover { color: #79c0ff; }
-
-    .header-icons { display: flex; align-items: center; gap: 1.2rem; }
-    .icon-btn {
-      background: none;
-      border: none;
-      color: var(--text);
-      font-size: 1.6rem;
-      cursor: pointer;
-      padding: 0.4rem;
-    }
-    .menu-btn { display: none; }
-
-    @media (max-width: 768px) {
-      .nav-desktop { display: none; }
-      .menu-btn { display: block; }
-    }
-
-    .side-menu {
-      position: fixed;
-      top: 0; right: -300px;
-      width: 280px; height: 100%;
-      background: var(--card);
-      border-left: 1px solid var(--border);
-      transition: right 0.4s ease;
-      z-index: 1100;
-      padding: 5rem 1.5rem 2rem;
-    }
-    .side-menu.open { right: 0; }
-    .side-menu a {
-      display: block;
-      color: var(--accent);
-      padding: 1rem 0;
-      font-size: 1.1rem;
-      text-decoration: none;
-      cursor: pointer;
-    }
-    .side-menu .close-btn {
-      position: absolute;
-      top: 1.2rem; right: 1.2rem;
-      font-size: 2.4rem;
-      cursor: pointer;
-    }
-
-    /* Mod Creator */
-    #modCreator {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: var(--bg);
-      z-index: 1300;
-      overflow-y: auto;
-      padding: 1.5rem 1rem;
-    }
-    .close-creator {
-      position: absolute;
-      top: 1rem;
-      right: 1.5rem;
-      font-size: 3.5rem;
-      cursor: pointer;
-      color: var(--accent);
-    }
-
-    .header-mod {
-      background: #111827;
-      padding: 1.2rem 1.8rem;
-      border-radius: 10px;
-      margin-bottom: 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 2px solid #1f2937;
-    }
-    .menu-toggle { font-size: 2rem; cursor: pointer; color: #60a5fa; display: none; }
-
-    .container-mod { display: flex; flex-wrap: wrap; gap: 1.5rem; }
-    .sidebar-mod {
-      width: 240px;
-      background: #111827;
-      padding: 1.5rem;
-      border-radius: 10px;
-      border: 1px solid #1f2937;
-    }
-    .sidebar-mod h2 { color: #60a5fa; margin-bottom: 1.5rem; font-size: 1.4rem; }
-    .menu-item-mod {
-      padding: 0.9rem;
-      margin: 0.5rem 0;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    .menu-item-mod.active, .menu-item-mod:hover { background: #1e40af; color: white; }
-
-    .main-content-mod { flex: 1; min-width: 300px; }
-    .section-mod {
-      background: #1f2937;
-      padding: 1.5rem;
-      border-radius: 10px;
-      margin-bottom: 1.5rem;
-    }
-    label { display: block; margin-bottom: 0.5rem; font-weight: 600; }
-    input, select, button {
-      width: 100%;
-      padding: 0.9rem;
-      border-radius: 6px;
-      border: 1px solid #374151;
-      background: #111827;
-      color: white;
-    }
-    .mod-btn {
-      background: linear-gradient(90deg, #3b82f6, #60a5fa);
-      border: none;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 1.1rem;
-      padding: 1rem 2rem;
-      border-radius: 8px;
-      margin-top: 1rem;
-    }
-    .mod-btn:hover { opacity: 0.92; }
-
-    /* Hero & Mods */
-    .hero { text-align: center; padding: 5rem 1rem 3rem; background: linear-gradient(to bottom, #0d1117, #161b22); }
-    .mods { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.8rem; padding: 2.5rem 1.5rem; max-width: 1400px; margin: 0 auto; }
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: transform 0.25s, box-shadow 0.25s; }
-    .card:hover { transform: translateY(-8px); box-shadow: 0 12px 30px rgba(0,0,0,0.4); }
-    .app-icon { width: 90px; height: 90px; border-radius: 18px; margin: 1.2rem auto; display: block; border: 3px solid var(--accent); object-fit: cover; }
-    .preview-gallery { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; padding: 0 1.2rem 1.2rem; }
-    .preview-gallery img { width: 100%; height: 140px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); }
-    .button { display: block; background: var(--accent); color: white; text-align: center; padding: 1rem; margin: 1.2rem 1.2rem 0.8rem; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 1.1rem; }
-    .button:hover { background: #79c0ff; }
-
-    /* Contact */
-    #contact { padding: 5rem 1.5rem 4rem; background: linear-gradient(to bottom, #0d1117, #161b22); text-align: center; }
-    #contact h2 { font-size: 2.8rem; margin-bottom: 1.2rem; color: var(--accent); }
-    .intro { font-size: 1.2rem; max-width: 720px; margin: 0 auto 3.5rem; opacity: 0.9; }
-    .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto; }
-    .contact-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 2.5rem 1.5rem;
-      transition: all 0.3s;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-    .contact-card:hover { transform: translateY(-10px); box-shadow: 0 15px 35px rgba(0,0,0,0.5); border-color: var(--accent); }
-    .contact-icon { font-size: 4.5rem; margin-bottom: 1.2rem; }
-
-    footer { text-align: center; padding: 3rem 1rem; background: #010409; border-top: 1px solid var(--border); font-size: 0.95rem; color: #8b949e; }
-     .info-box {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 2rem;
-      margin: 2.5rem 0;
-    }
-  .trailer {
-      margin: 3rem 0;
-      text-align: center;
-    }
-
-    .trailer iframe {
-      width: 100%;
-      max-width: 430px;
-      height: 180px;
-      border-radius: 16px;
-      border: 2px solid var(--border);
-    }
-
-</style>
+    
+    * { margin:0; padding:0; box-sizing:border-box; font-family: 'Plus Jakarta Sans', sans-serif; transition: background 0.4s ease, color 0.4s ease; }
+    body { background: var(--bg); color: var(--text); overflow-x: hidden; min-height: 100vh; }
+    header { position: sticky; top:0; display:flex; justify-content:space-between; align-items: center; padding:15px 25px; background:rgba(11, 13, 19, 0.7); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); z-index:1000; }
+    .side-menu { position:fixed; left:-320px; top:0; width:300px; height: 100vh; background: var(--menu-bg); backdrop-filter: blur(40px); z-index:2000; padding:25px; border-right:1px solid var(--border); display: flex; flex-direction: column; transition: left 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+    .side-menu.open { left:0; box-shadow: 20px 0 60px rgba(0,0,0,0.5); }
+    .menu-content { margin-top: 40px; flex-grow: 1; }
+    .side-menu a { display: flex; align-items: center; gap: 15px; color:var(--text); text-decoration:none; padding:16px 18px; margin-bottom:8px; border-radius:18px; font-weight: 600; }
+    .side-menu a:hover { background: rgba(120, 120, 120, 0.1); transform: translateX(5px); }
+    .side-footer { padding-top: 20px; border-top: 1px solid var(--border); }
+    .hero { padding: 60px 20px 20px; text-align: center; }
+    .hero h1 { font-size: 42px; font-weight: 900; }
+    .search-box { max-width:500px; margin: 30px auto; padding:0 20px; }
+    .search-input { width:100%; padding:18px 25px; border-radius:50px; background:var(--card); border:1px solid var(--border); color:var(--text); outline:none; }
+    .mods { display:grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap:25px; padding:20px; max-width:1200px; margin:0 auto; }
+    .card { background:var(--card); border-radius:32px; padding:20px; border:1px solid var(--border); animation: fadeInUp 0.7s ease-out backwards; }
+    .app-icon { width: 64px; height: 64px; border-radius: 18px; object-fit: cover; }
+    .screenshot { width:100%; border-radius: 20px; margin-bottom: 15px; aspect-ratio: 16/9; object-fit: cover; }
+    .btn-main { width:100%; padding:18px; border-radius:20px; border:none; background: #3b82f6; color:white; font-weight:800; cursor:pointer; text-align: center; display: block; text-decoration: none; }
+    .card:hover .btn-main { animation: pulse 1.5s infinite; }
+    .modal { position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter: blur(15px); display:none; align-items:center; justify-content:center; z-index:5000; padding: 20px; }
+    .auth-box { width:100%; max-width:400px; background:var(--card); padding:40px; border-radius:32px; border:1px solid var(--border); text-align:center; animation: fadeInUp 0.4s ease-out; }
+    .input-group { margin-bottom:15px; position: relative; }
+    .input-group input { width:100%; padding:15px; border-radius:14px; background:rgba(255,255,255,0.05); border:1px solid var(--border); color:var(--text); outline:none; }
+    .password-wrapper { position: relative; width: 100%; }
+    .toggle-password { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; opacity: 0.6; }
+  </style>
 </head>
 <body>
 
+  <audio id="bgMusic" loop>
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
+
   <header>
-    <h2 class="logo">DREAM MODS</h2>
-    <nav class="nav-desktop">
-      <a href="#">Home</a>
-      <a href="#">Cart (0)</a>
-      <a onclick="openModCreator()">Mod Creator</a>
-      <a href="#contact">Contact</a>
-      <a href="#">Profile</a>
-    </nav>
-    <div class="header-icons">
-      <button class="icon-btn">🔍</button>
-      <button class="icon-btn menu-btn" onclick="toggleMenu()">☰</button>
-      <button id="theme-toggle" class="icon-btn">🌙</button>
-    </div>
+    <button style="background:none; border:none; color:var(--text); font-size:24px; cursor:pointer;" onclick="toggleMenu()"><i class="fa-solid fa-bars-staggered"></i></button>
+    <div style="font-weight: 900; font-size: 22px; color: var(--accent);">DREAM STORE</div>
+    <button style="background:none; border:none; color:var(--text); font-size:24px; cursor:pointer;" onclick="toggleModal()"><i class="fa-solid fa-circle-user"></i></button>
   </header>
 
   <div id="sideMenu" class="side-menu">
-    <span class="close-btn" onclick="toggleMenu()">×</span>
-    <a onclick="toggleMenu()">Home</a>
-    <a onclick="toggleMenu()">My Cart</a>
-    <a onclick="openModCreator(); toggleMenu()">Mod Creator</a>
-    <a href="#contact" onclick="toggleMenu()">Contact</a>
-    <a onclick="toggleMenu()">Profile</a>
-  </div>
-
-  <!-- Mod Creator Overlay -->
-  <div id="modCreator">
-    <span class="close-creator" onclick="closeModCreator()">×</span>
-    <div style="max-width:1100px; margin:0 auto; padding:1rem;">
-      <div class="header-mod">
-        <h2 style="margin:0; color:#60a5fa; font-size:1.8rem;">Mod Creator – Request Custom Player / Team</h2>
-        <div class="menu-toggle" id="menuToggleMod">☰</div>
-      </div>
-
-      <div style="background:#1e293b; color:#e2e8f0; padding:1.4rem; border-radius:10px; margin-bottom:2rem; border-left:5px solid var(--accent);">
-        <strong style="font-size:1.2rem; display:block; margin-bottom:0.6rem;">How this tool works:</strong>
-        <ul style="margin:0.5rem 0 0 1.5rem; padding-left:0; list-style-type:disc;">
-          <li>Fill in the player or team details you want.</li>
-          <li>Click submit → Telegram opens with your request ready.</li>
-          <li>We receive it instantly and create the mod for you.</li>
-          <li><strong>Player mods</strong> → usually <strong>FREE</strong></li>
-          <li><strong>Team mods</strong> → one-time small fee (₹10 lifetime access)</li>
-        </ul>
-        <p style="margin-top:1rem; font-weight:600; color:#60a5fa;">
-          Fastest replies on Telegram (@itzdreammods)
-        </p>
-      </div>
-
-      <div class="container-mod">
-        <aside class="sidebar-mod" id="sidebarMod">
-          <h2>Choose Editor</h2>
-          <div class="menu-item-mod active" data-tab="player">Player Editor</div>
-          <div class="menu-item-mod" data-tab="team">Team Editor</div>
-        </aside>
-
-        <main class="main-content-mod">
-          <!-- Player Editor -->
-          <div id="playerMod" style="display:block;">
-             <form id="playerFormMod">
-              <div class="section-mod">
-                <label>Team Name</label>
-                <input type="text" name="teamName" placeholder="e.g. Mumbai Indians" required />
-              </div>
-              <div class="section-mod">
-                <label>Name</label>
-                <input type="text" name="name" placeholder="e.g. Virat Kohli" required />
-              </div>
-              <div class="section-mod">
-                <label>Role</label>
-                <select name="role" required>
-                  <option value="">Select Role</option>
-                  <option>Batsman</option>
-                  <option>Bowler</option>
-                  <option>All-rounder</option>
-                  <option>Wicket-keeper</option>
-                </select>
-              </div>
-              <div class="section-mod">
-                <label>Hands</label>
-                <div class="form-grid">
-                  <div><label>Bat</label><select name="batHand"><option>Right Bat</option><option>Left Bat</option></select></div>
-                  <div><label>Bowl</label><select name="bowlHand"><option>Right Bowl</option><option>Left Bowl</option></select></div>
-                </div>
-              </div>
-              <div class="section-mod">
-                <label>Bowling Type</label>
-                <select name="bowlingType">
-                  <option>None</option>
-                  <option>Fast</option>
-                  <option>Medium-Fast</option>
-                  <option>Medium</option>
-                  <option>Off-Spin</option>
-                  <option>Leg-Spin</option>
-                  <option>Fast-Medium</option>
-                </select>
-              </div>
-              <div class="section-mod">
-                <label>Face Type</label>
-                <div class="face-options">
-                  <label><input type="radio" name="faceType" value="Preset" checked> Preset</label>
-                  <label><input type="radio" name="faceType" value="Custom"> Custom Upload</label>
-                </div>
-                <div id="presetFaceBlockMod">
-                  <label>Select Face Preset</label>
-                  <select name="presetFaceId">
-                    <option value="">Choose Preset</option>
-        <option value="1">
-                        Preset 1
-                      </option>
-                      <option value="2">
-                        Preset 2
-                      </option>
-                      <option value="3">
-                        Preset 3
-                      </option>
-                      <option value="4">
-                        Preset 4
-                      </option>
-                      <option value="5">
-                        Preset 5
-                      </option>
-                      <option value="6">
-                        Preset 6
-                      </option>
-                      <option value="7">
-                        Preset 7
-                      </option>
-                      <option value="8">
-                        Preset 8
-                      </option>
-                      <option value="9">
-                        Preset 9
-                      </option>
-                      <option value="10">
-                        Preset 10
-                      </option>
-                      <option value="11">
-                        Preset 11
-                      </option>
-                      <option value="12">
-                        Preset 12
-                      </option>
-                      <option value="13">
-                        Preset 13
-                      </option>
-                      <option value="14">
-                        Preset 14
-                      </option>
-                      <option value="15">
-                        Preset 15
-                      </option>
-                      <option value="16">
-                        Preset 16
-                      </option>
-                      <option value="17">
-                        Preset 17
-                      </option>
-                      <option value="18">
-                        Preset 18
-                      </option>
-                      <option value="19">
-                        Preset 19
-                      </option>
-                      <option value="20">
-                        Preset 20
-                      </option>
-                      <option value="21">
-                        Preset 21
-                      </option>
-                      <option value="22">
-                        Preset 22
-                      </option>
-                      <option value="23">
-                        Preset 23
-                      </option>
-                      <option value="24">
-                        Preset 24
-                      </option>
-                      <option value="25">
-                        Preset 25
-                      </option>
-                      <option value="26">
-                        Preset 26
-                      </option>
-                      <option value="27">
-                        Preset 27
-                      </option>
-                      <option value="28">
-                        Preset 28
-                      </option>
-                      <option value="29">
-                        Preset 29
-                      </option>
-                      <option value="30">
-                        Preset 30
-                      </option>
-                      <option value="31">
-                        Preset 31
-                      </option>
-                      <option value="32">
-                        Preset 32
-                      </option>
-                      <option value="33">
-                        Preset 33
-                      </option>
-                      <option value="34">
-                        Preset 34
-                      </option>
-                      <option value="35">
-                        Preset 35
-                      </option>
-                      <option value="36">
-                        Preset 36
-                      </option>
-                      <option value="37">
-                        Preset 37
-                      </option>
-                      <option value="38">
-                        Preset 38
-                      </option>
-                      <option value="39">
-                        Preset 39
-                      </option>
-                      <option value="40">
-                        Preset 40
-                      </option>
-                      <option value="41">
-                        Preset 41
-                      </option>
-                      <option value="42">
-                        Preset 42
-                      </option>
-                      <option value="43">
-                        Preset 43
-                      </option>
-                      <option value="44">
-                        Preset 44
-                      </option>
-                      <option value="45">
-                        Preset 45
-                      </option>
-                      <option value="46">
-                        Preset 46
-                      </option>
-                      <option value="47">
-                        Preset 47
-                      </option>
-                      <option value="48">
-                        Preset 48
-                      </option>
-                      <option value="49">
-                        Preset 49
-                      </option>
-                      <option value="50">
-                        Preset 50
-                      </option>
-                      <option value="51">
-                        Preset 51
-                      </option>
-                      <option value="52">
-                        Preset 52
-                      </option>
-                      <option value="53">
-                        Preset 53
-                      </option>
-                      <option value="54">
-                        Preset 54
-                      </option>
-                      <option value="55">
-                        Preset 55
-                      </option>
-                      <option value="56">
-                        Preset 56
-                      </option>
-                      <option value="57">
-                        Preset 57
-                      </option>
-                      <option value="58">
-                        Preset 58
-                      </option>
-                      <option value="59">
-                        Preset 59
-                      </option>
-                      <option value="60">
-                        Preset 60
-                      </option>
-                      <option value="61">
-                        Preset 61
-                      </option>
-                      <option value="62">
-                        Preset 62
-                      </option>
-                      <option value="63">
-                        Preset 63
-                      </option>
-                      <option value="64">
-                        Preset 64
-                      </option>
-                      <option value="65">
-                        Preset 65
-                      </option>
-                      <option value="66">
-                        Preset 66
-                      </option>
-                      <option value="67">
-                        Preset 67
-                      </option>
-                      <option value="68">
-                        Preset 68
-                      </option>
-                      <option value="69">
-                        Preset 69
-                      </option>
-                      <option value="70">
-                        Preset 70
-                      </option>
-                      <option value="71">
-                        Preset 71
-                      </option>
-                      <option value="72">
-                        Preset 72
-                      </option>
-                      <option value="73">
-                        Preset 73
-                      </option>
-                      <option value="74">
-                        Preset 74
-                      </option>
-                      <option value="75">
-                        Preset 75
-                      </option>
-                      <option value="76">
-                        Preset 76
-                      </option>
-                      <option value="77">
-                        Preset 77
-                      </option>
-                      <option value="78">
-                        Preset 78
-                      </option>
-                      <option value="79">
-                        Preset 79
-                      </option>
-                      <option value="80">
-                        Preset 80
-                      </option>
-      </select>
-                </div>
-                <div id="customFaceBlockMod" style="display:none; margin-top:12px;">
-                  <label>Upload Custom Face</label>
-                  <input type="file" name="faceFile" accept="image/*" />
-                </div>
-              </div>
-              <div class="section-mod">
-                <label>Batting Skill</label>
-                <select name="battingSkill" required>
-                  <option>None</option>
-                  <option>Defensive</option>
-                  <option>Radical</option>
-                  <option>Brutal</option>
-                  <option>Balanced</option>
-                </select>
-                <div class="form-grid" style="margin-top:16px;">
-                  <div><label>Timing</label><input type="number" name="timing" min="0" max="99" required /></div>
-                  <div><label>Aggression</label><input type="number" name="aggression" min="0" max="99" required /></div>
-                  <div><label>Technique</label><input type="number" name="technique" min="0" max="99" required /></div>
-                </div>
-              </div>
-              <div class="section-mod">
-                <label>Jersey Number (0-99)</label>
-                <input type="number" name="jersey" min="0" max="99" required />
-              </div>
-          
-              <!-- Add more player fields here if needed (hands, bowling, face, stats, jersey) -->
-
-              <button type="submit" class="mod-btn">Send Player Request → Telegram</button>
-              <div id="status" style="margin-top:1rem; font-weight:bold;"></div>
-            </form>
-          </div>
-
-          <!-- Team Editor -->
-          <div id="teamMod" style="display:none;">
-            <form id="teamFormMod">
-              <div class="section-mod">
-                <label>Full Team Name <span style="color:#ff6b6b;">*</span></label>
-                <input type="text" name="fullName" placeholder="e.g. Chennai Super Kings" required>
-
-                <label style="margin-top:1.2rem;">Short Name (3-5 chars) <span style="color:#ff6b6b;">*</span></label>
-                <input type="text" name="shortName" placeholder="e.g. CSK, MI" maxlength="5" required>
-
-                <label style="margin-top:1.2rem;">Jersey / Kit Image</label>
-                <input type="file" name="jerseyImage" accept="image/*">
-
-                <label style="margin-top:1.2rem;">Team Logo</label>
-                <input type="file" name="logo" accept="image/*">
-              </div>
-
-              <button type="submit" class="mod-btn">Send Team Request → Telegram</button>
-              <div id="teamStatus" style="margin-top:1rem; font-weight:bold;"></div>
-
-              <div style="margin-top:1.5rem; padding:1rem; background:#2d3748; border-radius:8px; font-size:0.95rem;">
-                <strong>Note:</strong> Team mods include lifetime access key (₹10 one-time).
-              </div>
-            </form>
-          </div>
-        </main>
-      </div>
+    <div style="display:flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 11px; font-weight: 800; opacity: 0.5;">NAVIGATION</span>
+        <button style="background:none; border:none; color:var(--text); font-size: 24px;" onclick="toggleMenu()">×</button>
+    </div>
+    <div class="menu-content">
+      <a href="#"><i class="fa-solid fa-house" style="color: #08FF00;"></i> <span>Home</span></a>
+      <a href="mod.html"><i class="fa-solid fa-wrench" style="color: #FF0017;"></i> <span>Mod Creator</span></a>
+      <a href="connect.html"><i class="fa-solid fa-envelope" style="color: #0800FF;"></i> <span>Contact</span></a>
+    </div>
+    <div class="side-footer">
+      <a href="#" onclick="toggleMusic(); return false;" style="display:flex; align-items:center; gap:12px; margin-bottom:10px; text-decoration:none; color:var(--text);">
+        <i id="musicIcon" class="fa-solid fa-volume-high" style="color:#22c55e; font-size:18px;"></i> 
+        <span id="musicText" style="font-weight:700;">Music: ON</span>
+      </a>
+      <a href="#" onclick="updateTheme(); return false;" style="display:flex; align-items:center; gap:12px; margin-bottom:10px; text-decoration:none; color:var(--text);">
+        <i id="themeIcon" class="fa-solid fa-moon" style="color:#facc15; font-size:20px;"></i> 
+        <span id="themeText" style="font-weight:700;">Dark Mode</span>
+      </a>
+      <a href="profile.html" style="display:flex; align-items:center; gap:12px; background: rgba(255,255,255,0.05); border-radius: 20px; padding: 12px; text-decoration:none; color:var(--text);">
+        <i class="fa-solid fa-circle-user" style="color:#ec4899; font-size: 20px;"></i> 
+        <span id="displayUser" style="font-weight:800;">My Profile</span>
+      </a>
     </div>
   </div>
 
   <section class="hero">
-    <h1>WELCOME TO DREAM WEB GAMES LINKES SCROLL DOWN 👇 AND MODE CREATOR click icon☰</h1>
-    <p>Latest mods for Cricket X, Gods Cricket, Real Cricket & more</p>
+    <h1>DREAM STORE</h1>
+    <p style="opacity: 0.6; margin-top: 10px;">The Ultimate Destination for Premium Mods.</p>
   </section>
 
-  <section class="mods">
-    <div class="card">
-      <img class="app-icon" src="icon_Cx26.png" alt="CX26" onerror="this.src='https://img.icons8.com/fluency/96/cricket-ball.png';">
-      <h3 style="text-align:center; padding:0.8rem 0;">CRICKET X 26</h3>
-      <div class="preview-gallery">
-        <img src="cx26_screenshot.jpg" alt="CX26 gameplay">
-        <img src="Cx26_screanshot_2.jpg" alt="CX26 stadium">
-  
-      <p style="text-align:center; margin:1rem 0; color:var(--success);">V5</p>
-      <a href="https://sub2unlock.io/gRlch" class="button" target="_blank">DOWNLOAD NOW →</a>
+  <div class="search-box">
+    <input type="text" id="modSearch" class="search-input" placeholder="Search premium mods..." onkeyup="filterMods()">
+  </div>
+
+  <section class="mods" id="modsContainer">
+    <!-- Mods will be loaded from localStorage dream_store_mods -->
+  </section>
+
+  <div id="authModal" class="modal">
+    <div class="auth-box">
+      <h2 style="font-weight: 800; margin-bottom: 20px;">Signup</h2>
+      <div class="input-group">
+        <input type="text" id="regUser" placeholder="Username">
+      </div>
+      <div class="input-group">
+        <input type="email" id="regEmail" placeholder="Email Address">
+      </div>
+      <div class="input-group">
+        <div class="password-wrapper">
+          <input type="password" id="regPass" placeholder="Password">
+          <i class="fa-solid fa-eye toggle-password" id="eyeIcon" onclick="togglePass()"></i>
+        </div>
+      </div>
+      <button class="btn-main" onclick="handleSignup()">SIGN UP</button>
+      <p style="margin-top: 20px; font-size: 12px; cursor: pointer; opacity: 0.5;" onclick="toggleModal()">Close</p>
     </div>
-  </section>
-  </section>
-
-  </section>
-  </section>
-
-  </section>
-  <footer>
-    <p>© 2026 DREAM MODS × YASH MODS • All Rights Reserved</p>
-    <div style="margin-top:1rem;">
-      <a href="#contact" style="color:var(--accent); margin:0 1rem;">Contact</a> •
-      <a href="https://t.me/dreamempair9" target="_blank" style="color:var(--accent); margin:0 1rem;">Telegram offical group</a>
-    </div>
-  </footer>
-
-  <section id="contact">
-    <h2>Contact Us</h2>
-    <p class="intro">Questions, custom requests or support? Reach out — fastest on Telegram!</p>
-    <div class="contact-grid">
-      <a href="https://t.me/dreamempair9" target="_blank" class="contact-card">
-        <div class="contact-icon">✈️</div>
-        <h3>Telegram officel group </h3>
-        <div style="color:var(--accent); font-weight:600;"></div>
-        <p>Mod requests • Support</p>
-      </a>
-      <a href="https://youtube.com/@dreammods99?si=1UqeDJh7kMSnCWRU" target="_blank" class="contact-card">
-        <div class="contact-icon">🎥</div>
-        <h3>YouTube</h3>
-        <div style="color:var(--accent); font-weight:600;">@dreammod99</div>
-        <p>Trailers & Updates</p>
-      </a>
-      <!-- Add Instagram & Email cards similarly if needed -->
-    </div>
-  </section>
-
-
+  </div>
 
   <script>
-    // Theme toggle
-    document.getElementById('theme-toggle').addEventListener('click', () => {
-      const current = document.documentElement.getAttribute('data-theme') || 'dark';
-      const next = current === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', next);
-      document.getElementById('theme-toggle').textContent = next === 'dark' ? '🌙' : '☀️';
-    });
+    const audio = document.getElementById('bgMusic');
+    const mIcon = document.getElementById('musicIcon');
+    const mText = document.getElementById('musicText');
 
-    // Mobile menu
-    function toggleMenu() {
-      document.getElementById('sideMenu').classList.toggle('open');
+    window.addEventListener('click', () => {
+        if (audio.paused) {
+            audio.play().catch(() => {});
+        }
+    }, { once: true });
+
+    function toggleMusic() {
+        if (audio.paused) {
+            audio.play();
+            mIcon.className = "fa-solid fa-volume-high";
+            mIcon.style.color = "#22c55e";
+            mText.innerText = "Music: ON";
+        } else {
+            audio.pause();
+            mIcon.className = "fa-solid fa-volume-xmark";
+            mIcon.style.color = "#ef4444";
+            mText.innerText = "Music: OFF";
+        }
     }
 
-    // Mod Creator open/close
-    function openModCreator() {
-      document.getElementById('modCreator').style.display = 'block';
-      document.body.style.overflow = 'hidden';
+    function toggleMenu() { document.getElementById('sideMenu').classList.toggle('open'); }
+    function toggleModal() { 
+      const m = document.getElementById('authModal');
+      m.style.display = (m.style.display === 'flex') ? 'none' : 'flex';
     }
-    function closeModCreator() {
-      document.getElementById('modCreator').style.display = 'none';
-      document.body.style.overflow = '';
-    }
-
-    // Mod Creator tabs (mobile/desktop)
-    document.querySelectorAll('.menu-item-mod').forEach(item => {
-      item.addEventListener('click', () => {
-        document.querySelectorAll('.menu-item-mod').forEach(i => i.classList.remove('active'));
-        item.classList.add('active');
-        document.querySelectorAll('#playerMod, #teamMod').forEach(t => t.style.display = 'none');
-        document.getElementById(item.dataset.tab + 'Mod').style.display = 'block';
-      });
-    });
-
-    document.getElementById('menuToggleMod')?.addEventListener('click', () => {
-      document.getElementById('sidebarMod').classList.toggle('active');
-    });
-
-    // Player form → Telegram
-    document.getElementById('playerFormMod')?.addEventListener('submit', e => {
-      e.preventDefault();
-      const status = document.getElementById('status');
-      status.textContent = 'Opening Telegram...';
-      status.style.color = '#60a5fa';
-
-      const formData = new FormData(e.target);
-      let msg = '🏏 New Player Request (Dream Website)\n\n';
-      msg += `Team: ${formData.get('teamName') || 'N/A'}\n`;
-      msg += `Name: ${formData.get('name') || 'N/A'}\n`;
-      msg += `Role: ${formData.get('role') || 'N/A'}\n`;
-      msg += `Hands: Bat → ${formData.get('batHand') || 'N/A'} | Bowl → ${formData.get('bowlHand') || 'N/A'}\n`;
-      msg += `Bowling Type: ${formData.get('bowlingType') || 'None'}\n`;
-      msg += `Face: ${formData.get('faceType') || 'Preset'}\n`;
-      if (formData.get('faceType') === 'Preset') {
-        msg += `Preset Face ID: ${formData.get('presetFaceId') || 'Not selected'}\n`;
+    function togglePass() {
+      const p = document.getElementById('regPass');
+      const i = document.getElementById('eyeIcon');
+      if (p.type === 'password') {
+        p.type = 'text';
+        i.classList.replace('fa-eye', 'fa-eye-slash');
       } else {
-        msg += `Custom Face: ${formData.get('faceFile')?.name ? 'Uploaded ('+formData.get('faceFile').name+')' : 'None'}\n`;
+        p.type = 'password';
+        i.classList.replace('fa-eye-slash', 'fa-eye');
       }
-      msg += `Batting Skill: ${formData.get('battingSkill') || 'N/A'}\n`;
-      msg += `Timing: ${formData.get('timing') || '0'}/99\n`;
-      msg += `Aggression: ${formData.get('aggression') || '0'}/99\n`;
-      msg += `Technique: ${formData.get('technique') || '0'}/99\n`;
-      msg += `Jersey #: ${formData.get('jersey') || '0'}\n\n`;
-      msg += 'From DREAM MODS Creator 🔥❤️';
+    }
 
-      const encoded = encodeURIComponent(msg);
-      window.open(`https://t.me/Sophiax996?text=${encoded}`, '_blank');
+    // FIXED: Save user to allUsers array (so admin panel can see)
+    function handleSignup() {
+      const username = document.getElementById('regUser').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const password = document.getElementById('regPass').value;
 
-      status.textContent = 'Telegram opened → SUBMIT Wait the reply !';
-    });
+      if(!username || !email || !password) {
+        alert("Please fill all fields!");
+        return;
+      }
 
-    // Team Form → Telegram
-    document.getElementById('teamFormMod')?.addEventListener('submit', function(e) {
-      e.preventDefault();
-      const status = document.getElementById('teamStatus');
-      status.textContent = 'Opening Telegram...';
-      status.style.color = '#60a5fa';
+      // Get existing users or create new array
+      let allUsers = JSON.parse(localStorage.getItem("allUsers")) || [];
+      
+      // Optional: check duplicate
+      if(allUsers.some(u => u.email === email)) {
+        alert("Email already registered!");
+        return;
+      }
 
-      const formData = new FormData(e.target);
-      let msg = '🏟 New Team Request (Dream wedsite)\n\n';
-      msg += `Full Name: ${formData.get('fullName') || 'N/A'}\n`;
-      msg += `Short Name: ${formData.get('shortName') || 'N/A'}\n`;
-      msg += `Jersey Image: ${formData.get('jerseyImage')?.name ? 'Uploaded' : 'None'}\n`;
-      msg += `Logo: ${formData.get('logo')?.name ? 'Uploaded' : 'None'}\n\n`;
-      msg += 'From DREAM MODS Creator • Paid Lifetime Access @10₹ Only 🔥';
+      // Add new user
+      const newUser = {
+        username: username,
+        email: email,
+        password: password,   // stored as plain text (for admin view only)
+        timestamp: new Date().toLocaleString()
+      };
+      allUsers.push(newUser);
+      localStorage.setItem("allUsers", JSON.stringify(allUsers));
+      
+      // Also keep legacy separate items for profile page
+      localStorage.setItem('userName', username);
+      localStorage.setItem('userEmail', email);
 
-      const encoded = encodeURIComponent(msg);
-      window.open(`https://t.me/Sophiax996?text=${encoded}`, '_blank');
+      document.getElementById('displayUser').innerText = username;
+      alert("Signup Successful!");
+      toggleModal();
+    }
 
-      status.textContent = 'Telegram opened → Review & Send! (Paid access 10 Rs lifetime)';
-    });
+    function filterMods() {
+      const input = document.getElementById('modSearch').value.toUpperCase();
+      const cards = document.getElementsByClassName('card');
+      for (let i = 0; i < cards.length; i++) {
+        let title = cards[i].querySelector('.app-title').innerText;
+        cards[i].style.display = title.toUpperCase().includes(input) ? "" : "none";
+      }
+    }
 
-    // Keep your existing search, login/signup, etc. scripts here...
+    function applyTheme(theme) {
+      const text = document.getElementById('themeText');
+      const icon = document.getElementById('themeIcon');
+      if (theme === 'light') {
+        document.body.classList.add('light-theme');
+        text.innerText = "Light Mode";
+        icon.className = "fa-solid fa-sun";
+      } else {
+        document.body.classList.remove('light-theme');
+        text.innerText = "Dark Mode";
+        icon.className = "fa-solid fa-moon";
+      }
+    }
+
+    function updateTheme() {
+      const current = document.body.classList.contains('light-theme') ? 'dark' : 'light';
+      localStorage.setItem('theme', current);
+      applyTheme(current);
+    }
+
+    // Load store mods dynamically from localStorage
+    function loadStoreMods() {
+      let mods = localStorage.getItem("dream_store_mods");
+      if(!mods) {
+        const defaultMods = [{
+          id: "mod1",
+          title: "Cricket X 26",
+          version: "v5.0 Official Patch",
+          description: "Experience UHD graphics and real-face patches for Cricket X 26.",
+          icon: "cx26_icon.png",
+          screenshot: "cx26_screenshot1.jpg",
+          downloadLink: "CX26.html"
+        }];
+        localStorage.setItem("dream_store_mods", JSON.stringify(defaultMods));
+        mods = JSON.stringify(defaultMods);
+      }
+      const modsArray = JSON.parse(mods);
+      const container = document.getElementById("modsContainer");
+      if(container) {
+        container.innerHTML = modsArray.map(mod => `
+          <div class="card">
+            <div class="card-header" style="display:flex; align-items:center; gap:15px; margin-bottom:15px;">
+              <img src="${mod.icon || 'icon_cx26.png'}" class="app-icon" onerror="this.src='icon_cx26.png'">
+              <div>
+                <div class="app-title" style="font-size: 20px; font-weight: 800;">${mod.title}</div>
+                <div style="font-size:12px; opacity:0.5;">${mod.version}</div>
+              </div>
+            </div>
+            <img src="${mod.screenshot || 'https://images.unsplash.com/photo-1540747913346-19e3ad643121?w=800'}" class="screenshot" onerror="this.src='https://images.unsplash.com/photo-1540747913346-19e3ad643121?w=800'">
+            <p style="font-size: 14px; opacity: 0.7; margin-bottom: 20px;">${mod.description}</p>
+            <a href="${mod.downloadLink}" class="btn-main">Download Now</a>
+          </div>
+        `).join('');
+      }
+    }
+
+    window.onload = () => {
+      applyTheme(localStorage.getItem('theme') || 'dark');
+      const savedUser = localStorage.getItem('userName');
+      if(savedUser) document.getElementById('displayUser').innerText = savedUser;
+      loadStoreMods();
+    };
   </script>
 </body>
 </html>

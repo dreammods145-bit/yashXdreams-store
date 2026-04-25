@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Contact Us - Stark Mods</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#050505;
+color:white;
+padding:20px;
+}
+
+.container{
+max-width:500px;
+margin:auto;
+}
+
+.card{
+background:#111319;
+border:1px solid #222;
+border-radius:25px;
+padding:25px;
+margin-bottom:25px;
+box-shadow:0 0 20px rgba(255,255,255,.04);
+}
+
+h1{
+font-size:35px;
+margin-bottom:10px;
+}
+
+p{
+color:#aaa;
+margin-bottom:25px;
+}
+
+h2{
+margin-bottom:20px;
+font-size:28px;
+}
+
+label{
+display:block;
+margin-top:18px;
+margin-bottom:8px;
+font-weight:bold;
+}
+
+input,select,textarea{
+width:100%;
+padding:15px;
+border:none;
+border-radius:15px;
+background:#1d1f28;
+color:white;
+font-size:16px;
+outline:none;
+}
+
+textarea{
+height:140px;
+resize:none;
+}
+
+button{
+width:100%;
+margin-top:25px;
+padding:16px;
+border:none;
+border-radius:15px;
+background:#1f6dff;
+color:white;
+font-size:18px;
+font-weight:bold;
+cursor:pointer;
+}
+
+button:hover{
+opacity:.9;
+}
+
+.contact-box{
+display:flex;
+align-items:center;
+gap:15px;
+margin-bottom:30px;
+}
+
+.icon{
+width:60px;
+height:60px;
+border-radius:15px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:28px;
+}
+
+.blue{
+background:#142a60;
+}
+
+.sky{
+background:#102d42;
+}
+
+.red{
+background:#40191d;
+}
+
+.info h3{
+font-size:28px;
+margin-bottom:5px;
+}
+
+.info span{
+color:#888;
+display:block;
+margin-bottom:8px;
+}
+
+.info a{
+color:#2d74ff;
+text-decoration:none;
+font-size:22px;
+}
+
+.response{
+background:#0f2819;
+border:1px solid #1ea34a;
+padding:25px;
+border-radius:20px;
+color:#34d16a;
+}
+
+.response h3{
+margin-bottom:15px;
+font-size:30px;
+}
+.back-btn{
+display:inline-block;
+margin-bottom:20px;
+padding:12px 18px;
+background:#1d1f28;
+color:white;
+text-decoration:none;
+border-radius:14px;
+font-weight:bold;
+border:1px solid #333;
+}
+
+.back-btn:hover{
+background:#2a2d38;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+<a href="index.html" class="back-btn">
+← Back
+</a>
+<div class="card">
+<h1>Contact Us</h1>
+
+<p>
+Get in touch for support, subscriptions, or any questions about our tools.
+</p>
+
+<h2>Send us a Message</h2>
+
+<form id="contactForm">
+
+<label>Name *</label>
+<input type="text" id="name" required>
+
+<label>Subject *</label>
+<select id="subject">
+<option>General Inquiry</option>
+<option>Support</option>
+<option>Bug Report</option>
+</select>
+
+<label>Message *</label>
+<textarea id="message" placeholder="Please provide details..." required></textarea>
+
+<button type="submit">
+Send Message
+</button>
+
+</form>
+
+</div>
+
+
+<div class="card">
+
+<h2>Get in Touch</h2>
+
+<div class="contact-box">
+<div class="icon blue">✉</div>
+
+<div class="info">
+<h3>Email</h3>
+<span>Primary contact method</span>
+<a href="mailto:yashxdream.store@gmail.com">
+yashxdream.store
+</a>
+</div>
+</div>
+
+
+<div class="contact-box">
+<div class="icon sky">➤</div>
+
+<div class="info">
+<h3>Telegram</h3>
+<span>Fast response</span>
+<a href="https://t.me/Customplayer99">
+@Imdreammods
+</a>
+</div>
+</div>
+
+
+<div class="contact-box">
+<div class="icon red">▶</div>
+
+<div class="info">
+<h3>YouTube</h3>
+<span>Tutorials and updates</span>
+<a href="https://youtube.com/@dreammods99?si=WMzZibVD8nVs9R_i">
+@dreammods99
+</a>
+</div>
+</div>
+
+
+<div class="response">
+<h3>Response Time</h3>
+
+We typically respond within 24 hours.
+For urgent subscription issues, use Telegram.
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+document.getElementById("contactForm").addEventListener("submit",function(e){
+
+e.preventDefault();
+
+let name=document.getElementById("name").value;
+
+let subject=document.getElementById("subject").value;
+
+let message=document.getElementById("message").value;
+
+let text=
+"New Contact Request%0A%0A"+
+"Name: "+name+"%0A"+
+"Subject: "+subject+"%0A"+
+"Message: "+message;
+
+window.open(
+"https://t.me/Customplayer99?text="+text,
+"_blank"
+);
+
+});
+</script>
+
+</body>
+</html>

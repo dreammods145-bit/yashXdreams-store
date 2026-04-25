@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Editor | Dream Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="favicon.png">
+    
+    <style>
+        :root {
+            --bg: #05070a;
+            --glass: rgba(30, 41, 59, 0.4);
+            --accent: #fb923c;
+            --border: rgba(255, 255, 255, 0.08);
+        }
+
+        body {
+            background-color: var(--bg);
+            background-image: radial-gradient(circle at top, #1e293b 0%, #05070a 100%);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: white;
+            min-height: 100vh;
+        }
+
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+        }
+
+        /* NEW: Step Indicators */
+        .step-circle {
+            width: 24px;
+            height: 24px;
+            background: rgba(251, 146, 60, 0.2);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .type-box-small {
+            width: 100%;
+            padding: 12px 14px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: white;
+            font-size: 13px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .type-box-small:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 12px rgba(251, 146, 60, 0.2);
+            background: rgba(30, 41, 59, 0.6);
+        }
+
+        .label-micro {
+            font-size: 11px;
+            font-weight: 700;
+            color: #94a3b8;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-team {
+            background: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
+            color: #000;
+            font-weight: 800;
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-team:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 25px rgba(249, 115, 22, 0.4);
+        }
+
+        /* Animation for History Items */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .history-item { animation: fadeIn 0.4s ease forwards; }
+    </style>
+</head>
+<body class="p-4 md:p-10">
+
+    <div class="max-w-xl mx-auto">
+        <div class="flex items-center justify-between mb-8">
+            <a href="mod.html" class="flex items-center gap-2 text-slate-400 font-bold text-xs hover:text-white transition">
+                <span>⬅</span> Back to Home
+            </a>
+            <div class="bg-orange-500/10 text-orange-400 px-4 py-1.5 rounded-full border border-orange-500/20 text-[10px] font-black tracking-widest">
+                MOD BUILDER • PRO
+            </div>
+        </div>
+
+        <div class="glass-card p-8 mb-8">
+            <div class="mb-8">
+                <h1 class="text-3xl font-black text-white mb-2 uppercase italic tracking-tighter">Team Editor</h1>
+                <p class="text-slate-400 text-xs">Create your custom squad in 4 easy steps.</p>
+            </div>
+
+            <div class="space-y-6">
+                <div>
+                    <span class="label-micro"><div class="step-circle">1</div> TEAM NAME</span>
+                    <input type="text" id="fullName" class="type-box-small" placeholder="e.g. Mumbai Warriors">
+                </div>
+
+                <div>
+                    <span class="label-micro"><div class="step-circle">2</div> TEAM CODE (SHORT)</span>
+                    <input type="text" id="shortName" class="type-box-small" placeholder="e.g. MUM (Max 3 letters)">
+                </div>
+
+                <div>
+                    <span class="label-micro"><div class="step-circle">3</div> SELECT JERSEY STYLE</span>
+                    <select id="jersey" class="type-box-small cursor-pointer" onchange="toggleCustom()">
+                        <option value="Realistic 2026">🏏 Realistic 2026 Jersey</option>
+                        <option value="Random 1">🎲 Random Pack 1</option>
+                        <option value="Custom Design">🎨 Custom (Describe below)</option>
+                        <option value="Classic Retro">⏳ Classic Retro</option>
+                    </select>
+                </div>
+
+                <div id="customBox" class="hidden">
+                    <span class="label-micro">🎨 DESCRIBE COLORS/SPONSORS</span>
+                    <textarea id="customDetails" class="type-box-small h-20" placeholder="Blue with gold stripes, Tata logo on chest..."></textarea>
+                </div>
+
+                <div>
+                    <span class="label-micro"><div class="step-circle">4</div> TEAM LOGO (Optional)</span>
+                    <input type="file" id="logo" class="hidden" accept="image/*">
+                    <label for="logo" id="fileLabel" class="block w-full p-6 border-2 border-dashed border-slate-700 rounded-2xl text-center text-xs text-slate-500 cursor-pointer hover:border-orange-500/60 hover:bg-orange-500/5 transition">
+                        <div class="text-2xl mb-2">📁</div>
+                        CLICK TO UPLOAD PNG LOGO
+                    </label>
+                </div>
+
+                <button onclick="sendTeamRequest()" class="btn-team w-full py-5 rounded-2xl mt-4 uppercase text-sm tracking-widest flex items-center justify-center gap-2">
+                    <span>CREATE TEAM NOW</span>
+                    <span class="text-xl">🚀</span>
+                </button>
+            </div>
+        </div>
+
+        <div>
+            <div class="flex items-center gap-3 mb-4 px-2">
+                <span class="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></span>
+                <h3 class="text-[11px] font-black text-slate-500 uppercase tracking-[0.2em]">Live Activity Log</h3>
+            </div>
+            
+            <div id="historyList" class="space-y-3">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        // Update File Label with name
+        document.getElementById('logo').onchange = function() {
+            if(this.files.length > 0) {
+                document.getElementById('fileLabel').innerHTML = `
+                    <div class="text-emerald-400 font-bold">✅ FILE SELECTED</div>
+                    <div class="text-[10px] text-slate-400 mt-1">${this.files[0].name}</div>
+                `;
+                document.getElementById('fileLabel').style.borderColor = "#34d399";
+            }
+        };
+
+        function toggleCustom() {
+            const select = document.getElementById('jersey');
+            const box = document.getElementById('customBox');
+            box.classList.toggle('hidden', select.value !== "Custom Design");
+        }
+
+        function updateHistory() {
+            const history = JSON.parse(localStorage.getItem('teamRequests')) || [];
+            const list = document.getElementById('historyList');
+            
+            if(history.length === 0) {
+                list.innerHTML = `
+                    <div class="glass-card p-8 text-center text-slate-600">
+                        <div class="text-3xl mb-2 opacity-20">📂</div>
+                        <div class="text-[10px] font-bold uppercase tracking-widest">No requests yet</div>
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = history.slice().reverse().map(req => `
+                <div class="history-item flex items-center justify-between p-4 glass-card border-white/5">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-lg">🏏</div>
+                        <div>
+                            <div class="text-sm font-bold text-white">${req.name}</div>
+                            <div class="text-[10px] text-slate-500 font-bold">${req.time}</div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-end gap-1">
+                        <div class="text-[9px] font-black text-orange-400 bg-orange-400/10 px-3 py-1 rounded-full border border-orange-400/20">SENT</div>
+                        <div class="text-[8px] text-slate-600 font-bold uppercase">Processing</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function sendTeamRequest() {
+            const name = document.getElementById('fullName').value;
+            const short = document.getElementById('shortName').value;
+            const jersey = document.getElementById('jersey').value;
+            const custom = document.getElementById('customDetails').value;
+            const logo = document.getElementById('logo').files.length;
+
+            if(!name || !short) {
+                alert("Oops! Please fill in the Team Name and Short Code.");
+                return;
+            }
+
+            let jerseyFinal = jersey === "Custom Design" ? `Custom (${custom})` : jersey;
+
+            const history = JSON.parse(localStorage.getItem('teamRequests')) || [];
+            history.push({ name, time: new Date().toLocaleString() });
+            localStorage.setItem('teamRequests', JSON.stringify(history));
+            
+            updateHistory();
+
+            const msg = `🏟 TEAM REQUEST (DREAM MODS)\n\n🏏 Full Name: ${name}\n🔖 Short Name: ${short}\n👕 Jersey: ${jerseyFinal}\n📁 Logo: ${logo ? "Uploaded" : "No"}\n\n💰 Access: ₹10 Only\n⚡ DREAM SYSTEM`;
+            window.open("https://t.me/Customplayer99?text=" + encodeURIComponent(msg), "_blank");
+        }
+
+        updateHistory();
+    </script>
+</body>
+</html>
