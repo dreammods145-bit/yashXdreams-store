@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pro Player Editor</title>
+<style>
+:root {
+  --bg: #05070a;
+  --card: rgba(22, 27, 34, 0.96);
+  --accent: #58a6ff;
+  --accent-gradient: linear-gradient(135deg, #2563eb, #7c3aed);
+  --text: #e6edf3;
+  --text-muted: #8b949e;
+  --border: #30363d;
+  --input-bg: #0d1117;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: radial-gradient(circle at top right, #161b22, #05070a);
+  background-attachment: fixed;
+  color: var(--text);
+  padding: 16px;
+  overflow-x: hidden;
+}
+
+/* Page Entrance Animation */
+.container {
+  max-width: 950px;
+  margin: auto;
+  background: var(--card);
+  padding: 30px;
+  border-radius: 32px;
+  border: 1px solid var(--border);
+  box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+  backdrop-filter: blur(12px);
+  animation: containerAppear 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes containerAppear {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+h1 {
+  text-align: center;
+  color: #fff;
+  font-size: 32px;
+  letter-spacing: 4px;
+  margin-bottom: 25px;
+  text-transform: uppercase;
+  font-weight: 900;
+  animation: titleGlow 3s infinite alternate;
+}
+
+@keyframes titleGlow {
+  from { text-shadow: 0 0 10px rgba(88, 166, 255, 0.2); }
+  to { text-shadow: 0 0 25px rgba(88, 166, 255, 0.6), 0 0 40px rgba(124, 58, 237, 0.3); }
+}
+
+.section {
+  background: rgba(13, 17, 23, 0.7);
+  padding: 22px;
+  border-radius: 24px;
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.section:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  background: rgba(22, 27, 34, 1);
+}
+
+h3 {
+  margin-bottom: 15px;
+  color: var(--accent);
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+label {
+  display: block;
+  margin-top: 15px;
+  font-weight: 700;
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+input, select {
+  width: 100%;
+  padding: 14px;
+  margin-top: 6px;
+  border-radius: 14px;
+  background: var(--input-bg);
+  color: #fff;
+  border: 1px solid var(--border);
+  transition: 0.3s;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: #0f172a;
+  box-shadow: 0 0 0 4px rgba(88, 166, 255, 0.1);
+}
+
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+/* Animated Primary Button */
+.btn {
+  display: block;
+  width: 100%;
+  padding: 18px;
+  border: none;
+  border-radius: 18px;
+  margin-top: 25px;
+  background: var(--accent-gradient);
+  background-size: 200% auto;
+  color: #fff;
+  font-weight: 900;
+  font-size: 17px;
+  cursor: pointer;
+  text-transform: uppercase;
+  animation: pulseBtn 2s infinite, gradientMove 4s linear infinite;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes pulseBtn {
+  0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.5); }
+  70% { box-shadow: 0 0 0 15px rgba(37, 99, 235, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+}
+
+.btn:active { transform: scale(0.97); }
+
+.back-btn, .history-btn {
+  display: inline-flex;
+  padding: 12px 22px;
+  background: #1c2128;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  transition: 0.2s;
+}
+
+.back-btn:hover, .history-btn:hover { background: #30363d; border-color: var(--accent); }
+
+.hide { display: none; }
+
+#teamMenu {
+  margin-top: 10px;
+  background: #0d1117;
+  border-radius: 20px;
+  border: 2px solid var(--accent);
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 10px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.7);
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+#teamMenu div[onclick] {
+  padding: 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-bottom: 4px;
+  transition: 0.2s;
+}
+
+#teamMenu div[onclick]:hover { background: rgba(88, 166, 255, 0.2); padding-left: 20px; }
+
+/* Face Preview Section */
+#face_preview {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  border-radius: 24px;
+  background: #0d1117;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--border);
+}
+
+#face_img { width: 100%; height: 100%; border-radius: 22px; object-fit: cover; }
+
+#face_number {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: var(--accent);
+  color: #000;
+  padding: 4px 10px;
+  border-radius: 10px;
+  font-weight: 900;
+}
+
+.face-animate { animation: flipIn 0.5s ease-out; }
+@keyframes flipIn {
+  0% { transform: rotateY(-90deg); opacity: 0; }
+  100% { transform: rotateY(0deg); opacity: 1; }
+}
+
+#face_grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 6px;
+  margin-top: 15px;
+  max-height: 180px;
+  overflow-y: auto;
+  padding: 10px;
+  background: #080a0d;
+  border-radius: 18px;
+}
+
+#face_grid button {
+  padding: 10px 5px;
+  border-radius: 10px;
+  background: #161b22;
+  color: #fff;
+  border: 1px solid var(--border);
+  cursor: pointer;
+}
+
+#face_grid button:hover { background: var(--accent); color: #000; transform: scale(1.1); }
+
+@media(max-width:700px){ .grid { grid-template-columns: 1fr; } #face_grid { grid-template-columns: repeat(5, 1fr); } }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div style="display:flex; justify-content: space-between;">
+    <a href="mod.html" class="back-btn">← Back</a>
+    <button class="history-btn" onclick="openHistory()">📜 History</button>
+  </div>
+
+  <h1>Player Editor</h1>
+
+  <div class="section">
+    <h3>Player Info</h3>
+    <label>Player Name</label>
+    <input id="p_name" placeholder="Enter name...">
+    
+    <label>Select Team</label>
+    <button type="button" onclick="toggleTeamMenu()" id="teamToggle" class="back-btn" style="width:100%; text-align:left; margin-top:8px;">Select Team ▼</button>
+    <div id="teamMenu" class="hide">
+      <div style="padding:10px; font-weight:800; color:var(--accent);">INTERNATIONAL</div>
+      <div onclick="setTeam('India')">India</div>
+      <div onclick="setTeam('Australia')">Australia</div>
+      <div onclick="setTeam('England')">England</div>
+      <div onclick="setTeam('Pakistan')">Pakistan</div>
+      <div style="padding:10px; font-weight:800; color:#f59e0b;">IPL</div>
+      <div onclick="setTeam('CSK')">CSK</div>
+      <div onclick="setTeam('Mumbai Indians')">Mumbai Indians</div>
+      <div onclick="setTeam('RCB')">RCB</div>
+    </div>
+    <input type="hidden" id="team">
+
+    <label>Player Role</label>
+    <select id="role" onchange="checkRole()">
+      <option>Batsman</option>
+      <option>Bowler</option>
+      <option>All-rounder</option>
+      <option>Wicket Keeper</option>
+    </select>
+  </div>
+
+  <div class="section">
+    <h3>Batting</h3>
+    <div class="grid">
+      <div><label>Timing</label><input id="timing" value="95"></div>
+      <div><label>Aggression</label><input id="aggression" value="90"></div>
+    </div>
+    <label>Batting Style</label>
+    <select id="bat_style"><option>Balanced</option><option>Radical</option><option>Brute</option></select>
+  </div>
+
+  <div class="section">
+    <h3>Face & Hands</h3>
+    <div class="grid" style="align-items:center;">
+      <div id="face_preview">
+        <img id="face_img" src="face1.png" alt="">
+        <span id="face_number">1</span>
+      </div>
+      <div>
+        <label>Face Selection</label>
+        <div style="display:flex; gap:10px;">
+          <button class="back-btn" onclick="changeFace(-1)">⬅</button>
+          <button class="back-btn" onclick="changeFace(1)">➡</button>
+        </div>
+        <label>Batting Hand</label>
+        <select id="bat_hand"><option>Right Bat</option><option>Left Bat</option></select>
+      </div>
+    </div>
+    <div id="face_grid"></div>
+  </div>
+
+  <div id="bowling" class="section hide">
+    <h3>Bowling</h3>
+    <div class="grid">
+      <div>
+        <label>Style</label>
+        <select id="b_style" onchange="updateBowlingActions()">
+          <option value="">Select</option>
+          <option value="fast">Fast</option>
+          <option value="spin">Spin</option>
+        </select>
+      </div>
+      <div>
+        <label>Action</label>
+        <select id="b_action"><option>Select Action</option></select>
+      </div>
+    </div>
+    <div class="grid">
+      <div><label>Movement</label><input id="movement" value="99"></div>
+      <div><label>Accuracy</label><input id="accuracy" value="99"></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <label>Jersey Number</label>
+    <input id="jersey" type="number" placeholder="7">
+  </div>
+
+  <button class="btn" onclick="sendPlayer()">🚀 Send Mod Request</button>
+</div>
+
+<div id="historyModal" class="hide" style="position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:999; padding:20px;">
+  <div style="max-width:600px; margin:auto; background:#161b22; padding:25px; border-radius:24px; max-height:80vh; overflow-y:auto; border:1px solid var(--accent);">
+    <button class="back-btn" onclick="closeHistory()">Close</button>
+    <h2 style="margin:20px 0;">Request History</h2>
+    <div id="historyList"></div>
+  </div>
+</div>
+
+<script>
+let selectedFace = 1;
+const MAX_FACE = 80;
+
+// Initialize Grid
+const faceGrid = document.getElementById('face_grid');
+for(let i=1; i<=MAX_FACE; i++) {
+  const btn = document.createElement('button');
+  btn.innerText = i;
+  btn.onclick = () => { selectedFace = i; updateFacePreview(); };
+  faceGrid.appendChild(btn);
+}
+
+function toggleTeamMenu(){ document.getElementById('teamMenu').classList.toggle('hide'); }
+function setTeam(n){ 
+  document.getElementById('team').value = n;
+  document.getElementById('teamToggle').innerText = n + ' ▼';
+  toggleTeamMenu();
+}
+
+function checkRole(){
+  let r = document.getElementById('role').value;
+  document.getElementById('bowling').classList.toggle('hide', !(r==='Bowler'||r==='All-rounder'));
+}
+
+function updateBowlingActions(){
+  let s = document.getElementById('b_style').value;
+  let b = document.getElementById('b_action');
+  let actions = {
+    fast: ['Jasprit Bumrah', 'Mitchell Starc', 'Shaheen Afridi', 'Pat Cummins'],
+    spin: ['Rashid Khan', 'Ravindra Jadeja', 'Kuldeep Yadav', 'Adam Zampa']
+  };
+  b.innerHTML = '<option>Select Action</option>';
+  if(actions[s]) actions[s].forEach(a => {
+    let o = document.createElement('option'); o.text = a; b.add(o);
+  });
+}
+
+function updateFacePreview(){
+  const img = document.getElementById('face_img');
+  const num = document.getElementById('face_number');
+  const preview = document.getElementById('face_preview');
+  preview.classList.remove('face-animate');
+  void preview.offsetWidth; 
+  preview.classList.add('face-animate');
+  
+  img.src = `faces/face${selectedFace}.png`;
+  num.innerText = selectedFace;
+}
+
+function changeFace(d){
+  selectedFace += d;
+  if(selectedFace < 1) selectedFace = MAX_FACE;
+  if(selectedFace > MAX_FACE) selectedFace = 1;
+  updateFacePreview();
+}
+
+function v(id){ return document.getElementById(id).value || 'N/A'; }
+
+function sendPlayer(){
+  let msg = `🏏 *MOD REQUEST*\n\n👤 Name: ${v('p_name')}\n🚩 Team: ${v('team')}\n👕 Jersey: ${v('jersey')}\n🎭 Face ID: ${selectedFace}`;
+  window.open('https://t.me/Customplayer99?text=' + encodeURIComponent(msg), '_blank');
+}
+
+function openHistory(){ document.getElementById('historyModal').classList.remove('hide'); }
+function closeHistory(){ document.getElementById('historyModal').classList.add('hide'); }
+</script>
+
+</body>
+</html>
